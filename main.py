@@ -72,7 +72,7 @@ def evaluate(data, model, name):
         instance = instances[start:end]
         if not instance:
             continue
-        batch_word, batch_wordlen, batch_wordrecover, batch_char, batch_charlen, batch_charrecover, batch_label, mask  = batchify_sequence_labeling_with_label(instance, args.gpu, False)
+        batch_word, batch_wordlen, batch_wordrecover, batch_char, batch_charlen, batch_charrecover, batch_label, mask  = batchify_sequence_labeling_with_label(instance, args.gpu,args.max_sent_length, False)
         tag_seq = model(batch_word, batch_wordlen, batch_char, batch_charlen, batch_charrecover, mask)
         # print("tag:",tag_seq)
         pred_label, gold_label = recover_label(tag_seq, batch_label, mask, data.label_alphabet, batch_wordrecover)
@@ -135,7 +135,8 @@ def train(args,data,model):
             instance = data.train_Ids[start:end]
             if not instance:
                 continue
-            batch_word, batch_wordlen, batch_wordrecover, batch_char, batch_charlen, batch_charrecover, batch_hlabel,batch_llabel, mask  = batchify_sequence_labeling_with_label(instance, args.gpu, True)
+            batch_word, batch_wordlen, batch_wordrecover, batch_char, batch_charlen, batch_charrecover, batch_hlabel,batch_llabel, mask  =\
+                batchify_sequence_labeling_with_label(instance, args.gpu,args.max_sent_length,True)
             instance_count += 1
             H2BH_loss,H2BB_loss,B2HB_loss,B2HH_loss,H2BH_tag_seqs,H2BB_tag_seqs,B2HB_tag_seqs,B2HH_tag_seqs = model.calculate_loss(batch_word, batch_wordlen, batch_char, batch_charlen, batch_charrecover, batch_hlabel,batch_llabel, mask)
 
@@ -159,6 +160,8 @@ def train(args,data,model):
                 sys.stdout.flush()
                 sample_loss = 0
             loss.backward()
+            if args.clip:
+                torch.nn.utils.clip_grad_norm_(model.parameters(),args.clip)
             optimizer.step()
             model.zero_grad()
         temp_time = time.time()
