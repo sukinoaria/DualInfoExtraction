@@ -85,8 +85,19 @@ class DualNet(nn.Module):
     #todo for a while...
     def forward(self, word_inputs, word_seq_lengths, char_inputs, char_seq_lengths, char_seq_recover, mask):
         word_represent = self.wordrep(word_inputs, word_seq_lengths, char_inputs, char_seq_lengths, char_seq_recover)
-        tag_seqs =  self.H2BH(word_inputs,word_represent, word_seq_lengths,mask)
-        return tag_seqs
+
+        H2BH_outs,H2BH_tag_seqs = self.H_ner(word_represent, word_seq_lengths, mask)
+        B2HB_outs,B2HB_tag_seqs = self.B_ner(word_represent, word_seq_lengths, mask)
+
+        high_rep, low_rep = self.inter_unit(word_represent, H2BH_outs, B2HB_outs)
+
+        # concat low level information to do low level tagging
+        _,H2BB_tag_seqs = self.B_ner(high_rep, word_seq_lengths, mask)
+        # concat high level information to do high level tagging
+        _,B2HH_tag_seqs = self.H_ner(low_rep, word_seq_lengths, mask)
+
+        return H2BH_tag_seqs, H2BB_tag_seqs, B2HB_tag_seqs, B2HH_tag_seqs
+
 
     def show_model_summary(self,logger):
         logger.info(" " + "++" * 20)

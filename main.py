@@ -72,10 +72,10 @@ def evaluate(data, model, name):
         instance = instances[start:end]
         if not instance:
             continue
-        batch_word, batch_wordlen, batch_wordrecover, batch_char, batch_charlen, batch_charrecover, batch_label, mask  = batchify_sequence_labeling_with_label(instance, args.gpu,args.max_sent_length, False)
-        tag_seq = model(batch_word, batch_wordlen, batch_char, batch_charlen, batch_charrecover, mask)
+        batch_word, batch_wordlen, batch_wordrecover, batch_char, batch_charlen, batch_charrecover, batch_hlabel,batch_llabel, mask  = batchify_sequence_labeling_with_label(instance, args.gpu,args.max_sent_length, False)
+        H2BH_tag_seqs, H2BB_tag_seqs, B2HB_tag_seqs, B2HH_tag_seqs = model(batch_word, batch_wordlen, batch_char, batch_charlen, batch_charrecover, mask)
         # print("tag:",tag_seq)
-        pred_label, gold_label = recover_label(tag_seq, batch_label, mask, data.label_alphabet, batch_wordrecover)
+        pred_label, gold_label = recover_label(H2BB_tag_seqs, batch_llabel, mask, data.llabelset, batch_wordrecover)
         pred_results += pred_label
         gold_results += gold_label
     decode_time = time.time() - start_time
@@ -128,6 +128,7 @@ def train(args,data,model):
         total_batch = train_num//batch_size+1
 
         for batch_id in range(total_batch):
+
             start = batch_id*batch_size
             end = (batch_id+1)*batch_size
             if end >train_num:
@@ -149,7 +150,7 @@ def train(args,data,model):
             loss = H2BH_loss + H2BB_loss + B2HB_loss + B2HH_loss
             sample_loss += loss.item()
             total_loss += loss.item()
-            if end%50 == 0:
+            if end%10 == 0:
                 temp_time = time.time()
                 temp_cost = temp_time - temp_start
                 temp_start = temp_time

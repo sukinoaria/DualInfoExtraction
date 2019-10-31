@@ -94,9 +94,9 @@ class BiLSTMCRF(nn.Module):
         return outs,total_loss,tag_seq
 
 
-    def forward(self, word_inputs,word_represent, word_seq_lengths,mask):
-        batch_size = word_inputs.size(0)
-        seq_len = word_inputs.size(1)
+    def forward(self,word_represent, word_seq_lengths,mask):
+        batch_size = word_represent.size(0)
+        seq_len = self.input_size
 
         packed_words = pack_padded_sequence(word_represent, word_seq_lengths.cpu().numpy(), True)
         hidden = None
@@ -114,7 +114,7 @@ class BiLSTMCRF(nn.Module):
             tag_seq = tag_seq.view(batch_size, seq_len)
             ## filter padded position with zero
             tag_seq = mask.long() * tag_seq
-        return tag_seq
+        return outs,tag_seq
 
     def sentence_representation(self, word_represent, word_seq_lengths):
         """
