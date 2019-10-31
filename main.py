@@ -149,7 +149,7 @@ def train(args,data,model):
             loss = H2BH_loss + H2BB_loss + B2HB_loss + B2HH_loss
             sample_loss += loss.item()
             total_loss += loss.item()
-            if end%30 == 0:
+            if end%50 == 0:
                 temp_time = time.time()
                 temp_cost = temp_time - temp_start
                 temp_start = temp_time
