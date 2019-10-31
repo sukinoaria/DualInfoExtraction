@@ -194,7 +194,7 @@ def recover_label(pred_variable, gold_variable, mask_variable, label_alphabet, w
         gold_label.append(gold)
     return pred_label, gold_label
 
-def batchify_sequence_labeling_with_label(input_batch_list, gpu, if_train=True):
+def batchify_sequence_labeling_with_label(input_batch_list, gpu,max_sent_length, if_train=True):
     """
         input: list of words, chars and labels, various length. [[words, features, chars, labels],[words, features, chars,labels],...]
             words: word ids for one sentence. (batch_size, sent_len)
@@ -214,10 +214,23 @@ def batchify_sequence_labeling_with_label(input_batch_list, gpu, if_train=True):
             mask: (batch_size, max_sent_len)
     """
     batch_size = len(input_batch_list)
-    words = [sent[0] for sent in input_batch_list]
-    chars = [sent[1] for sent in input_batch_list]
-    hlabels = [sent[2] for sent in input_batch_list]
-    llabels = [sent[3] for sent in input_batch_list]
+
+    #cut too long texts
+    words = []
+    chars = []
+    hlabels = []
+    llabels = []
+    for sent in input_batch_list:
+        word = sent[0] if len(sent[0]) < max_sent_length else sent[0][:max_sent_length]
+        char = sent[1] if len(sent[0]) < max_sent_length else sent[1][:max_sent_length]
+        hlabel = sent[2] if len(sent[0]) < max_sent_length else sent[2][:max_sent_length]
+        llabel = sent[3] if len(sent[0]) < max_sent_length else sent[3][:max_sent_length]
+
+        words.append(word)
+        chars.append(char)
+        hlabels.append(hlabel)
+        llabels.append(llabel)
+
     word_seq_lengths = torch.LongTensor(list(map(len, words)))
     max_seq_len = word_seq_lengths.max().item()
     word_seq_tensor = torch.zeros((batch_size, max_seq_len), requires_grad =  if_train).long()

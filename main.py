@@ -72,7 +72,7 @@ def evaluate(data, model, name):
         instance = instances[start:end]
         if not instance:
             continue
-        batch_word, batch_wordlen, batch_wordrecover, batch_char, batch_charlen, batch_charrecover, batch_label, mask  = batchify_sequence_labeling_with_label(instance, args.gpu, False)
+        batch_word, batch_wordlen, batch_wordrecover, batch_char, batch_charlen, batch_charrecover, batch_label, mask  = batchify_sequence_labeling_with_label(instance, args.gpu,args.max_sent_length, False)
         tag_seq = model(batch_word, batch_wordlen, batch_char, batch_charlen, batch_charrecover, mask)
         # print("tag:",tag_seq)
         pred_label, gold_label = recover_label(tag_seq, batch_label, mask, data.label_alphabet, batch_wordrecover)
@@ -115,8 +115,8 @@ def train(args,data,model):
         sample_id = 0
         sample_loss = 0
         total_loss = 0
-        right_token = 0
-        whole_token = 0
+        sample_right_token = 0
+        sample_whole_token = 0
         random.shuffle(data.train_Ids)
         #print("Shuffle: first input word list:", data.train_Ids[0][0])
         ## set model in train model
@@ -135,14 +135,15 @@ def train(args,data,model):
             instance = data.train_Ids[start:end]
             if not instance:
                 continue
-            batch_word, batch_wordlen, batch_wordrecover, batch_char, batch_charlen, batch_charrecover, batch_hlabel,batch_llabel, mask  = batchify_sequence_labeling_with_label(instance, args.gpu, True)
+            batch_word, batch_wordlen, batch_wordrecover, batch_char, batch_charlen, batch_charrecover, batch_hlabel,batch_llabel, mask  =\
+                batchify_sequence_labeling_with_label(instance, args.gpu,args.max_sent_length,True)
             instance_count += 1
             H2BH_loss,H2BB_loss,B2HB_loss,B2HH_loss,H2BH_tag_seqs,H2BB_tag_seqs,B2HB_tag_seqs,B2HH_tag_seqs = model.calculate_loss(batch_word, batch_wordlen, batch_char, batch_charlen, batch_charrecover, batch_hlabel,batch_llabel, mask)
 
             #todo change to evaluate both layer tag....
             right, whole = predict_check(H2BB_tag_seqs, batch_llabel, mask)
-            right_token += right
-            whole_token += whole
+            sample_right_token += right
+            sample_whole_token += whole
             # print("loss:",loss.item())
 
             loss = H2BH_loss + H2BB_loss + B2HB_loss + B2HH_loss
@@ -152,18 +153,22 @@ def train(args,data,model):
                 temp_time = time.time()
                 temp_cost = temp_time - temp_start
                 temp_start = temp_time
-                print("     Instance: %s; Time: %.2fs; loss: %.4f; acc: %s/%s=%.4f"%(end, temp_cost, sample_loss, right_token, whole_token,(right_token+0.)/whole_token))
+                print("     Instance: %s; Time: %.2fs; loss: %.4f; acc: %s/%s=%.4f"%(end, temp_cost, sample_loss, sample_right_token, sample_whole_token,(sample_right_token+0.)/sample_whole_token))
                 if sample_loss > 1e8 or str(sample_loss) == "nan":
                     print("ERROR: LOSS EXPLOSION (>1e8) ! PLEASE SET PROPER PARAMETERS AND STRUCTURE! EXIT....")
                     exit(1)
                 sys.stdout.flush()
                 sample_loss = 0
+                sample_right_token = 0
+                sample_whole_token = 0
             loss.backward()
+            if args.clip:
+                torch.nn.utils.clip_grad_norm_(model.parameters(),args.clip)
             optimizer.step()
             model.zero_grad()
         temp_time = time.time()
         temp_cost = temp_time - temp_start
-        print("     Instance: %s; Time: %.2fs; loss: %.4f; acc: %s/%s=%.4f"%(end, temp_cost, sample_loss, right_token, whole_token,(right_token+0.)/whole_token))
+        print("     Instance: %s; Time: %.2fs; loss: %.4f; acc: %s/%s=%.4f"%(end, temp_cost, sample_loss, sample_right_token, sample_whole_token,(sample_right_token+0.)/sample_whole_token))
 
         epoch_finish = time.time()
         epoch_cost = epoch_finish - epoch_start
