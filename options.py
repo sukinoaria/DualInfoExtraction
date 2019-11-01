@@ -18,7 +18,7 @@ def parse_argument():
 
     parser.add_argument('--wordemb',  help='Embedding for words', default='dataset/glove.6B.100d.txt')
     parser.add_argument('--charemb',  help='Embedding for chars', default=None)
-    parser.add_argument('--char_emb_dim', help='Embedding dim for chars', default=20)
+    parser.add_argument('--char_emb_dim', help='Embedding dim for chars', default=30)
     parser.add_argument('--word_emb_dim', help='Embedding dim for words', default=100)
 
     parser.add_argument('--max_sent_length', type=int, default=500)
@@ -37,7 +37,7 @@ def parse_argument():
 
     ### Hyperparameters
     parser.add_argument('--cnn_layer', type=int, default=4)
-    parser.add_argument('--char_hidden_dim', type=int, default=20)
+    parser.add_argument('--char_hidden_dim', type=int, default=30)
     parser.add_argument('--hidden_dim', type=int, default=200)
     parser.add_argument('--dropout', type=int, default=0.5)
     parser.add_argument('--lstm_layer', type=int, default=1)
@@ -45,8 +45,8 @@ def parse_argument():
     parser.add_argument('--gpu', type=bool, default=False)
     parser.add_argument('--lr', type=float, default=0.015)
     parser.add_argument('--lr_decay', type=float, default=0.05)
-    parser.add_argument('--clip', type=int, default=1)
-    parser.add_argument('--momentum', type=float, default=0)
+    parser.add_argument('--clip', type=int, default=5)
+    parser.add_argument('--momentum', type=float, default=0.9)
     parser.add_argument('--l2', type=float, default=1e-8)
 
     args = parser.parse_args()
