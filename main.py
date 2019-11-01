@@ -112,18 +112,17 @@ def train(args,data,model):
         if args.optimizer == "SGD":
             optimizer = lr_decay(optimizer, idx, args.lr_decay, args.lr)
         instance_count = 0
-        sample_id = 0
         sample_loss = 0
         total_loss = 0
-        sample_right_token = 0
-        sample_whole_token = 0
+        sample_H2B_right_token = 0
+        sample_H2B_whole_token = 0
+        sample_B2H_right_token = 0
+        sample_B2H_whole_token = 0
         random.shuffle(data.train_Ids)
-        #print("Shuffle: first input word list:", data.train_Ids[0][0])
-        ## set model in train model
+
         model.train()
         model.zero_grad()
         batch_size = args.batch_size
-        batch_id = 0
         train_num = len(data.train_Ids)
         total_batch = train_num//batch_size+1
 
@@ -141,11 +140,14 @@ def train(args,data,model):
             instance_count += 1
             H2BH_loss,H2BB_loss,B2HB_loss,B2HH_loss,H2BH_tag_seqs,H2BB_tag_seqs,B2HB_tag_seqs,B2HH_tag_seqs = model.calculate_loss(batch_word, batch_wordlen, batch_char, batch_charlen, batch_charrecover, batch_hlabel,batch_llabel, mask)
 
-            #todo change to evaluate both layer tag....
-            right, whole = predict_check(H2BB_tag_seqs, batch_llabel, mask)
-            sample_right_token += right
-            sample_whole_token += whole
-            # print("loss:",loss.item())
+            #high layer & low layer correct as a right token
+            H2B_right, H2B_whole = predict_check(H2BH_tag_seqs,H2BB_tag_seqs,batch_hlabel, batch_llabel, mask)
+            sample_H2B_right_token += H2B_right
+            sample_H2B_whole_token += H2B_whole
+
+            B2H_right, B2H_whole = predict_check(B2HH_tag_seqs, B2HB_tag_seqs, batch_hlabel, batch_llabel, mask)
+            sample_B2H_right_token += B2H_right
+            sample_B2H_whole_token += B2H_whole
 
             loss = H2BH_loss + H2BB_loss + B2HB_loss + B2HH_loss
             sample_loss += loss.item()
@@ -154,14 +156,20 @@ def train(args,data,model):
                 temp_time = time.time()
                 temp_cost = temp_time - temp_start
                 temp_start = temp_time
-                print("     Instance: %s; Time: %.2fs; loss: %.4f; acc: %s/%s=%.4f"%(end, temp_cost, sample_loss, sample_right_token, sample_whole_token,(sample_right_token+0.)/sample_whole_token))
+                print("     Instance: %s; Time: %.2fs; loss: %.4f; H2B acc: %s/%s=%.4f;B2H acc: %s/%s=%.4f"
+                      % (end, temp_cost, sample_loss, sample_H2B_right_token, sample_H2B_whole_token,
+                         (sample_H2B_right_token + 0.)
+                         / sample_H2B_whole_token, sample_B2H_right_token, sample_B2H_whole_token,
+                         (sample_B2H_right_token + 0.) / sample_B2H_whole_token))
                 if sample_loss > 1e8 or str(sample_loss) == "nan":
                     print("ERROR: LOSS EXPLOSION (>1e8) ! PLEASE SET PROPER PARAMETERS AND STRUCTURE! EXIT....")
                     exit(1)
                 sys.stdout.flush()
                 sample_loss = 0
-                sample_right_token = 0
-                sample_whole_token = 0
+                sample_H2B_right_token = 0
+                sample_H2B_whole_token = 0
+                sample_B2H_right_token = 0
+                sample_B2H_whole_token = 0
             loss.backward()
             if args.clip:
                 torch.nn.utils.clip_grad_norm_(model.parameters(),args.clip)
@@ -169,8 +177,11 @@ def train(args,data,model):
             model.zero_grad()
         temp_time = time.time()
         temp_cost = temp_time - temp_start
-        print("     Instance: %s; Time: %.2fs; loss: %.4f; acc: %s/%s=%.4f"%(end, temp_cost, sample_loss, sample_right_token, sample_whole_token,(sample_right_token+0.)/sample_whole_token))
-
+        print("     Instance: %s; Time: %.2fs; loss: %.4f; H2B acc: %s/%s=%.4f;B2H acc: %s/%s=%.4f"
+              % (end, temp_cost, sample_loss, sample_H2B_right_token, sample_H2B_whole_token,
+                 (sample_H2B_right_token + 0.)
+                 / sample_H2B_whole_token, sample_B2H_right_token, sample_B2H_whole_token,
+                 (sample_B2H_right_token + 0.) / sample_B2H_whole_token))
         epoch_finish = time.time()
         epoch_cost = epoch_finish - epoch_start
         logger.info("Epoch: %s training finished. Time: %.2fs, speed: %.2fst/s,  total loss: %s"%(idx, epoch_cost, train_num/epoch_cost, total_loss))
@@ -244,6 +255,7 @@ if __name__ == '__main__':
 
     if status == 'train':
         print("MODEL: train")
+        model.load_state_dict(torch.load(args.load_model_name,map_location='cpu'))
         train(args,data,model)
 
     elif status == 'test':

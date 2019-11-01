@@ -150,19 +150,25 @@ def load_pretrain_emb(embedding_path):
             embedd_dict[first_col] = embedd
     return embedd_dict, embedd_dim
 
-def predict_check(pred_variable, gold_variable, mask_variable):
+def predict_check(hpred_variable,lpred_variable, hgold_variable,lgold_variable, mask_variable):
     """
         input:
             pred_variable (batch_size, sent_len): pred tag result, in numpy format
             gold_variable (batch_size, sent_len): gold result variable
             mask_variable (batch_size, sent_len): mask variable
     """
-    pred = pred_variable.cpu().data.numpy()
-    gold = gold_variable.cpu().data.numpy()
-    mask = mask_variable.cpu().data.numpy()
-    overlaped = (pred == gold)
+    hpred = hpred_variable.cpu().data.numpy()
+    lpred = lpred_variable.cpu().data.numpy()
+    hgold = hgold_variable.cpu().data.numpy()
+    lgold = lgold_variable.cpu().data.numpy()
 
-    right_token = np.sum(overlaped * mask)
+    mask = mask_variable.cpu().data.numpy()
+
+    hoverlaped = (hpred == hgold)
+    loverlaped = (lpred == lgold)
+    #correct token when both level is True
+    alloverlaped = (hoverlaped == True) & (loverlaped == True)
+    right_token = np.sum(alloverlaped * mask)
     total_token = mask.sum()
     # print("right: %s, total: %s"%(right_token, total_token))
     return right_token, total_token
