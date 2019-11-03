@@ -7,41 +7,15 @@
 # from operator import add
 #
 from __future__ import print_function
+import re
 import sys
 
-
-
-## input as sentence level labels
-def get_ner_fmeasure(golden_lists, predict_lists, label_type="BMES"):
-    sent_num = len(golden_lists)
-    golden_full = []
-    predict_full = []
-    right_full = []
-    right_tag = 0
-    all_tag = 0
-    for idx in range(0,sent_num):
-        # word_list = sentence_lists[idx]
-        golden_list = golden_lists[idx]
-        predict_list = predict_lists[idx]
-        for idy in range(len(golden_list)):
-            if golden_list[idy] == predict_list[idy]:
-                right_tag += 1
-        all_tag += len(golden_list)
-        if label_type == "BMES" or label_type == "BIOES":
-            gold_matrix = get_ner_BMES(golden_list)
-            pred_matrix = get_ner_BMES(predict_list)
-        else:
-            gold_matrix = get_ner_BIO(golden_list)
-            pred_matrix = get_ner_BIO(predict_list)
-        # print "gold", gold_matrix
-        # print "pred", pred_matrix
-        right_ner = list(set(gold_matrix).intersection(set(pred_matrix)))
-        golden_full += gold_matrix
-        predict_full += pred_matrix
-        right_full += right_ner
+def calc_prf(right_full,golden_full,predict_full):
     right_num = len(right_full)
     golden_num = len(golden_full)
     predict_num = len(predict_full)
+
+    #calc p r f
     if predict_num == 0:
         precision = -1
     else:
@@ -54,15 +28,77 @@ def get_ner_fmeasure(golden_lists, predict_lists, label_type="BMES"):
         f_measure = -1
     else:
         f_measure = 2*precision*recall/(precision+recall)
-    accuracy = (right_tag+0.0)/all_tag
-    # print "Accuracy: ", right_tag,"/",all_tag,"=",accuracy
-    # if  label_type.upper().startswith("B-"):
-    #     print("gold_num = ", golden_num, " pred_num = ", predict_num, " right_num = ", right_num)
-    # else:
-    #     print("Right token = ", right_tag, " All token = ", all_tag, " acc = ", accuracy)
 
-    return accuracy, precision, recall, f_measure
+    return  [precision, recall, f_measure]
 
+## input as sentence level labels
+def get_ner_fmeasure(hgold_lists,lgold_lists, hpred_lists,lpred_lists):
+    """
+    :param hgold_lists:  high level ground truth label lists
+    :param lgold_lists: bottom level ground truth label lists
+    :param hpred_lists: high level predict label lists
+    :param lpred_lists: bottom level predict label lists
+    :return: in high level bottom level and both level evaluates
+    """
+    sent_num = len(hgold_lists)
+    right_high_tag = 0
+    all_high_tag= 0
+
+    high_golden_full = []
+    bot_golden_full = []
+    all_golden_full = []
+
+    high_predict_full = []
+    bot_predict_full = []
+    all_predict_full = []
+
+    high_right_full = []
+    bot_right_full = []
+    all_right_full = []
+
+    for idx in range(0,sent_num):
+        # word_list = sentence_lists[idx]
+        hgolden_list = hgold_lists[idx]
+        lgolden_list = lgold_lists[idx]
+        hpredict_list = hpred_lists[idx]
+        lpredict_list = lpred_lists[idx]
+
+        #high level acc calc
+        for idy in range(len(hgolden_list)):
+            if hgolden_list[idy] == hpredict_list[idy]:
+                right_high_tag += 1
+        all_high_tag += len(hgolden_list)
+
+        #generate labels
+        hgold_matrix = get_ner_BIO(hgolden_list)
+        lgold_matrix = get_ner_BIO(lgolden_list)
+        hpred_matrix = get_ner_BIO(hpredict_list)
+        lpred_matrix = get_ner_BIO(lpredict_list)
+
+        #calc union label
+        all_gold_matrix = concat_2level_labels(hgold_matrix,lgold_matrix)
+        all_pred_matrix = concat_2level_labels(hpred_matrix,lpred_matrix)
+
+        high_right_ner = list(set(hgold_matrix).intersection(set(hpred_matrix)))
+        low_right_ner = list(set(lgold_matrix).intersection(set(lpred_matrix)))
+        all_right_ner = list(set(all_gold_matrix).intersection(set(all_pred_matrix)))
+
+        high_golden_full += hgold_matrix
+        bot_golden_full += lgold_matrix
+        all_golden_full += all_gold_matrix
+
+        high_predict_full += hpred_matrix
+        bot_predict_full += lpred_matrix
+        all_predict_full += all_pred_matrix
+
+        high_right_full += high_right_ner
+        bot_right_full += low_right_ner
+        all_right_full += all_right_ner
+    high_accuracy = (right_high_tag + 0.0) / all_high_tag
+    high_evals = calc_prf(high_right_full,high_golden_full,high_predict_full)
+    bot_evals = calc_prf(bot_right_full,bot_golden_full,bot_predict_full)
+    all_evals = calc_prf(all_right_full,all_golden_full,all_predict_full)
+    return [high_accuracy]+ high_evals,bot_evals,all_evals
 
 def reverse_style(input_string):
     target_position = input_string.index('[')
@@ -70,6 +106,129 @@ def reverse_style(input_string):
     output_string = input_string[target_position:input_len] + input_string[0:target_position]
     return output_string
 
+def concat_2level_labels(hlabel_lists,llabel_lists):
+    hlabels = process_label_str(hlabel_lists)
+    llabels = process_label_str(llabel_lists)
+    all_labels = []
+    #add start_pos list to help process out-boundary predicted low labels
+    start_pos = [start for start,_,_ in hlabels]
+    #for last high label
+    start_pos.append(10000)
+    for i,(hstart,hend,hlabel) in enumerate(hlabels):
+        for lstart,lend,llabel in llabels:
+            if lstart >= hstart and lend <= hend:
+                all_labels.append('[{},{}]{}-{}'.format(lstart,lend,hlabel,llabel))
+            #predict false boundary ... set high label = 'O' to calc FP
+            #just happend in the end of a information block
+            elif lstart >=hstart and  lend > hend and lstart < start_pos[i+1]:
+                all_labels.append('[{},{}]{}-{}'.format(lstart, lend, 'O', llabel))
+                break
+
+    return all_labels
+
+# deal label format : '[start,end]TagName'
+def process_label_str(label_lists):
+    processed_labels = []
+    for label in label_lists:
+        _label = re.match(r'\[(.*?),(.*?)\](.*)',label).groups()
+        processed_labels.append([int(_label[0]),int(_label[1]),_label[2]])
+    return processed_labels
+
+def get_ner_BIO(label_list):
+    # list_len = len(word_list)
+    # assert(list_len == len(label_list)), "word list size unmatch with label list"
+    list_len = len(label_list)
+    begin_label = 'B-'
+    inside_label = 'I-'
+    whole_tag = ''
+    index_tag = ''
+    tag_list = []
+    stand_matrix = []
+    for i in range(0, list_len):
+        # wordlabel = word_list[i]
+        current_label = label_list[i].upper()
+        if begin_label in current_label:
+            if index_tag == '':
+                whole_tag = current_label.replace(begin_label,"",1) +'[' +str(i)
+                index_tag = current_label.replace(begin_label,"",1)
+            else:
+                tag_list.append(whole_tag + ',' + str(i-1))
+                whole_tag = current_label.replace(begin_label,"",1)  + '[' + str(i)
+                index_tag = current_label.replace(begin_label,"",1)
+
+        elif inside_label in current_label:
+            if current_label.replace(inside_label,"",1) == index_tag:
+                whole_tag = whole_tag
+            else:
+                if (whole_tag != '')&(index_tag != ''):
+                    tag_list.append(whole_tag +',' + str(i-1))
+                whole_tag = ''
+                index_tag = ''
+        else:
+            if (whole_tag != '')&(index_tag != ''):
+                tag_list.append(whole_tag +',' + str(i-1))
+            whole_tag = ''
+            index_tag = ''
+
+    if (whole_tag != '')&(index_tag != ''):
+        tag_list.append(whole_tag)
+    tag_list_len = len(tag_list)
+
+    for i in range(0, tag_list_len):
+        if  len(tag_list[i]) > 0:
+            if ',' in tag_list[i]:
+                tag_list[i] = tag_list[i]+ ']'
+            #last label need add len-1 as end.
+            else:
+                tag_list[i] = tag_list[i] +','+str(len(label_list)-1)+ ']'
+            insert_list = reverse_style(tag_list[i])
+            stand_matrix.append(insert_list)
+    return stand_matrix
+
+def readSentence(input_file):
+    in_lines = open(input_file,'r').readlines()
+    sentences = []
+    labels = []
+    sentence = []
+    label = []
+    for line in in_lines:
+        if len(line) < 2:
+            sentences.append(sentence)
+            labels.append(label)
+            sentence = []
+            label = []
+        else:
+            pair = line.strip('\n').split(' ')
+            sentence.append(pair[0])
+            label.append(pair[-1])
+    return sentences,labels
+
+
+def readTwoLabelSentence(input_file, pred_col=-1):
+    in_lines = open(input_file,'r').readlines()
+    sentences = []
+    predict_labels = []
+    golden_labels = []
+    sentence = []
+    predict_label = []
+    golden_label = []
+    for line in in_lines:
+        if "##score##" in line:
+            continue
+        if len(line) < 2:
+            sentences.append(sentence)
+            golden_labels.append(golden_label)
+            predict_labels.append(predict_label)
+            sentence = []
+            golden_label = []
+            predict_label = []
+        else:
+            pair = line.strip('\n').split(' ')
+            sentence.append(pair[0])
+            golden_label.append(pair[1])
+            predict_label.append(pair[pred_col])
+
+    return sentences,golden_labels,predict_labels
 
 def get_ner_BMES(label_list):
     # list_len = len(word_list)
@@ -116,101 +275,6 @@ def get_ner_BMES(label_list):
             stand_matrix.append(insert_list)
     # print stand_matrix
     return stand_matrix
-
-
-def get_ner_BIO(label_list):
-    # list_len = len(word_list)
-    # assert(list_len == len(label_list)), "word list size unmatch with label list"
-    list_len = len(label_list)
-    begin_label = 'B-'
-    inside_label = 'I-'
-    whole_tag = ''
-    index_tag = ''
-    tag_list = []
-    stand_matrix = []
-    for i in range(0, list_len):
-        # wordlabel = word_list[i]
-        current_label = label_list[i].upper()
-        if begin_label in current_label:
-            if index_tag == '':
-                whole_tag = current_label.replace(begin_label,"",1) +'[' +str(i)
-                index_tag = current_label.replace(begin_label,"",1)
-            else:
-                tag_list.append(whole_tag + ',' + str(i-1))
-                whole_tag = current_label.replace(begin_label,"",1)  + '[' + str(i)
-                index_tag = current_label.replace(begin_label,"",1)
-
-        elif inside_label in current_label:
-            if current_label.replace(inside_label,"",1) == index_tag:
-                whole_tag = whole_tag
-            else:
-                if (whole_tag != '')&(index_tag != ''):
-                    tag_list.append(whole_tag +',' + str(i-1))
-                whole_tag = ''
-                index_tag = ''
-        else:
-            if (whole_tag != '')&(index_tag != ''):
-                tag_list.append(whole_tag +',' + str(i-1))
-            whole_tag = ''
-            index_tag = ''
-
-    if (whole_tag != '')&(index_tag != ''):
-        tag_list.append(whole_tag)
-    tag_list_len = len(tag_list)
-
-    for i in range(0, tag_list_len):
-        if  len(tag_list[i]) > 0:
-            tag_list[i] = tag_list[i]+ ']'
-            insert_list = reverse_style(tag_list[i])
-            stand_matrix.append(insert_list)
-    return stand_matrix
-
-
-
-def readSentence(input_file):
-    in_lines = open(input_file,'r').readlines()
-    sentences = []
-    labels = []
-    sentence = []
-    label = []
-    for line in in_lines:
-        if len(line) < 2:
-            sentences.append(sentence)
-            labels.append(label)
-            sentence = []
-            label = []
-        else:
-            pair = line.strip('\n').split(' ')
-            sentence.append(pair[0])
-            label.append(pair[-1])
-    return sentences,labels
-
-
-def readTwoLabelSentence(input_file, pred_col=-1):
-    in_lines = open(input_file,'r').readlines()
-    sentences = []
-    predict_labels = []
-    golden_labels = []
-    sentence = []
-    predict_label = []
-    golden_label = []
-    for line in in_lines:
-        if "##score##" in line:
-            continue
-        if len(line) < 2:
-            sentences.append(sentence)
-            golden_labels.append(golden_label)
-            predict_labels.append(predict_label)
-            sentence = []
-            golden_label = []
-            predict_label = []
-        else:
-            pair = line.strip('\n').split(' ')
-            sentence.append(pair[0])
-            golden_label.append(pair[1])
-            predict_label.append(pair[pred_col])
-
-    return sentences,golden_labels,predict_labels
 
 
 def fmeasure_from_file(golden_file, predict_file, label_type="BMES"):

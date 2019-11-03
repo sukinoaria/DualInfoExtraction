@@ -42,7 +42,7 @@ def lr_decay(optimizer, epoch, decay_rate, init_lr):
         param_group['lr'] = lr
     return optimizer
 
-def evaluate(data, model, name):
+def evaluate(data, model,logger, name):
     if name == "train":
         instances = data.train_Ids
     elif name == "dev":
@@ -52,12 +52,12 @@ def evaluate(data, model, name):
     else:
         print("Error: wrong evaluate name,", name)
         exit(1)
-    right_token = 0
-    whole_token = 0
-    nbest_pred_results = []
-    pred_scores = []
-    pred_results = []
-    gold_results = []
+    H2BH_pred_results = []
+    H2BB_pred_results = []
+    B2HH_pred_results = []
+    B2HB_pred_results = []
+    hgold_results = []
+    lgold_results = []
     ## set model in eval model
     model.eval()
     batch_size = model.batch_size
@@ -74,15 +74,40 @@ def evaluate(data, model, name):
             continue
         batch_word, batch_wordlen, batch_wordrecover, batch_char, batch_charlen, batch_charrecover, batch_hlabel,batch_llabel, mask  = batchify_sequence_labeling_with_label(instance, args.gpu,args.max_sent_length, False)
         H2BH_tag_seqs, H2BB_tag_seqs, B2HB_tag_seqs, B2HH_tag_seqs = model(batch_word, batch_wordlen, batch_char, batch_charlen, batch_charrecover, mask)
-        # print("tag:",tag_seq)
-        pred_label, gold_label = recover_label(H2BB_tag_seqs, batch_llabel, mask, data.llabelset, batch_wordrecover)
-        pred_results += pred_label
-        gold_results += gold_label
+
+        H2BHpred_label, H2BBpred_label, hgold_label, lgold_label = recover_label(H2BH_tag_seqs, H2BB_tag_seqs,
+                                                                                 batch_hlabel, batch_llabel, mask,
+                                                                                 data.hlabelset, data.llabelset,
+                                                                                 batch_wordrecover)
+        B2HHpred_label, B2HBpred_label, _,_ = recover_label(B2HH_tag_seqs, B2HB_tag_seqs,
+                                                                                 batch_hlabel, batch_llabel, mask,
+                                                                                 data.hlabelset, data.llabelset,
+                                                                                 batch_wordrecover)
+        H2BH_pred_results += H2BHpred_label
+        H2BB_pred_results += H2BBpred_label
+        B2HH_pred_results += B2HHpred_label
+        B2HB_pred_results += B2HBpred_label
+        hgold_results += hgold_label
+        lgold_results += lgold_label
+
     decode_time = time.time() - start_time
     speed = len(instances)/decode_time
 
-    acc, p, r, f = get_ner_fmeasure(gold_results, pred_results, data.tagScheme)
-    return speed, acc, p, r, f, pred_results
+    H2BH_evals,H2BB_evals,H2B_evals = get_ner_fmeasure(hgold_results,lgold_results, H2BH_pred_results,H2BB_pred_results)
+    B2HH_evals,B2HB_evals,B2H_evals = get_ner_fmeasure(hgold_results,lgold_results, B2HH_pred_results,B2HB_pred_results)
+
+    H2B_results = [H2BH_pred_results,H2BB_pred_results]
+    B2H_results = [B2HH_pred_results,B2HB_pred_results]
+
+    logger.info(
+        "DEV --HIGH layer: H2B MODEL  acc:%.4f , p: %.4f, r: %.4f, f: %.4f  B2H MODEL acc:%.4f , p: %.4f, r: %.4f, f: %.4f ." %
+        (H2BH_evals[0], H2BH_evals[1], H2BH_evals[2],H2BH_evals[3], B2HH_evals[0], B2HH_evals[1], B2HH_evals[2], B2HH_evals[3]))
+
+    logger.info(
+        "DEV --BOT layer: H2B MODEL  p: %.4f, r: %.4f, f: %.4f  B2H MODEL  p: %.4f, r: %.4f, f: %.4f ." %
+        (H2BB_evals[0], H2BB_evals[1], H2BB_evals[2], B2HB_evals[0], B2HB_evals[1], B2HB_evals[2]))
+
+    return H2B_evals,B2H_evals, H2B_results,B2H_results
 
 def train(args,data,model):
     logger.info("Training model...")
@@ -192,13 +217,21 @@ def train(args,data,model):
             exit(1)
 
         # continue
-        speed, acc, p, r, f, _ = evaluate(data, model, "dev")
+        H2B_evals,B2H_evals, H2B_results,B2H_results= evaluate(data, model,logger, "dev")
         dev_finish = time.time()
         dev_cost = dev_finish - epoch_finish
 
-        current_score = f
-        logger.info("Dev: time: %.2fs, speed: %.2fst/s; acc: %.4f, p: %.4f, r: %.4f, f: %.4f,best_f: %.4f"%(dev_cost, speed, acc, p, r, f,best_dev))
-        print("Dev: time: %.2fs, speed: %.2fst/s; acc: %.4f, p: %.4f, r: %.4f, f: %.4f,best_f: %.4f" % (dev_cost, speed, acc, p, r, f,best_dev))
+        #use h2b score as temp evaluation...
+        current_score = H2B_evals[3]
+
+        logger.info(
+            "DEV --ALL layer: H2B MODEL  p: %.4f, r: %.4f, f: %.4f  B2H MODEL  p: %.4f, r: %.4f, f: %.4f .best_f: %.4f" %
+            (H2B_evals[0], H2B_evals[1], H2B_evals[2], B2H_evals[0], B2H_evals[1], B2H_evals[2], best_dev))
+
+        print(
+            "DEV --ALL layer: H2B MODEL  p: %.4f, r: %.4f, f: %.4f  B2H MODEL  p: %.4f, r: %.4f, f: %.4f .best_f: %.4f" %
+            (H2B_evals[0], H2B_evals[1], H2B_evals[2], B2H_evals[0], B2H_evals[1], B2H_evals[2], best_dev))
+
         if current_score > best_dev:
             print("New f score %f > previous %f ,Save current best model in file:%s" % (current_score,best_dev,args.load_model_name))
             torch.save(model.state_dict(), args.load_model_name)
@@ -212,11 +245,11 @@ def load_model_decode(args,data,model,name):
 
     print("Decode %s data ..."% name)
     start_time = time.time()
-    speed, acc, p, r, f, pred_results= evaluate(data, model, name)
+    H2B_evals,B2H_evals, H2B_results,B2H_results= evaluate(data, model, name)
     end_time = time.time()
     time_cost = end_time - start_time
-    print("%s: time:%.2fs, speed:%.2fst/s; acc: %.4f, p: %.4f, r: %.4f, f: %.4f"%(name, time_cost, speed, acc, p, r, f))
-    return pred_results
+    #print("%s: time:%.2fs, speed:%.2fst/s; acc: %.4f, p: %.4f, r: %.4f, f: %.4f"%(name, time_cost, speed, acc, p, r, f))
+    return H2B_results
 
 if __name__ == '__main__':
 
@@ -255,19 +288,25 @@ if __name__ == '__main__':
 
     if status == 'train':
         print("MODEL: train")
-        model.load_state_dict(torch.load(args.load_model_name,map_location='cpu'))
         train(args,data,model)
 
     elif status == 'test':
         print("MODEL: test")
         print("Load Model from file: ", args.load_model_name)
-        model.load_state_dict(torch.load(args.load_model_name))
+        model.load_state_dict(torch.load(args.load_model_name, map_location='cpu'))
+        if args.gpu:
+            model.to(torch.device("cuda"))
         model.show_model_summary(logger)
         test_start = time.time()
-        speed, acc, p, r, f, _= evaluate(data, model, "test")
+        H2B_evals,B2H_evals, H2B_results,B2H_results= evaluate(data, model,logger, "test")
         test_cost = time.time() - test_start
-        print("Test: time: %.2fs, speed: %.2fst/s; acc: %.4f, p: %.4f, r: %.4f, f: %.4f"%(test_cost, speed, acc, p, r, f))
-        logger.info("Test: time: %.2fs, speed: %.2fst/s; acc: %.4f, p: %.4f, r: %.4f, f: %.4f" % (test_cost, speed, acc, p, r, f))
+        logger.info(
+            "DEV --ALL layer: H2B MODEL  p: %.4f, r: %.4f, f: %.4f  B2H MODEL  p: %.4f, r: %.4f, f: %.4f ." %
+            (H2B_evals[0], H2B_evals[1], H2B_evals[2], B2H_evals[0], B2H_evals[1], B2H_evals[2]))
+
+        print(
+            "DEV --ALL layer: H2B MODEL  p: %.4f, r: %.4f, f: %.4f  B2H MODEL  p: %.4f, r: %.4f, f: %.4f " %
+            (H2B_evals[0], H2B_evals[1], H2B_evals[2], B2H_evals[0], B2H_evals[1], B2H_evals[2]))
 
     elif status == 'decode':
         print("MODEL: decode")

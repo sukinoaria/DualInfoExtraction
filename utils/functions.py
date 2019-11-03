@@ -173,52 +173,50 @@ def predict_check(hpred_variable,lpred_variable, hgold_variable,lgold_variable, 
     # print("right: %s, total: %s"%(right_token, total_token))
     return right_token, total_token
 
-def recover_label(pred_variable, gold_variable, mask_variable, label_alphabet, word_recover):
+def recover_label(hpred_variable,lpred_variable, hgold_variable,lgold_variable, mask_variable, hlabel_alphabet,llabel_alphabet, word_recover):
     """
         input:
             pred_variable (batch_size, sent_len): pred tag result
             gold_variable (batch_size, sent_len): gold result variable
             mask_variable (batch_size, sent_len): mask variable
     """
-    pred_variable = pred_variable[word_recover]
-    gold_variable = gold_variable[word_recover]
-    mask_variable = mask_variable[word_recover]
-    batch_size = gold_variable.size(0)
+    hpred_variable = hpred_variable[word_recover]
+    lpred_variable = lpred_variable[word_recover]
 
-    seq_len = gold_variable.size(1)
+    hgold_variable = hgold_variable[word_recover]
+    lgold_variable = lgold_variable[word_recover]
+
+    mask_variable = mask_variable[word_recover]
+    batch_size = hgold_variable.size(0)
+
+    seq_len = hgold_variable.size(1)
     mask = mask_variable.cpu().data.numpy()
-    pred_tag = pred_variable.cpu().data.numpy()
-    gold_tag = gold_variable.cpu().data.numpy()
+    hpred_tag = hpred_variable.cpu().data.numpy()
+    lpred_tag = lpred_variable.cpu().data.numpy()
+
+    hgold_tag = hgold_variable.cpu().data.numpy()
+    lgold_tag = lgold_variable.cpu().data.numpy()
+
     batch_size = mask.shape[0]
-    pred_label = []
-    gold_label = []
+    hpred_label = []
+    lpred_label = []
+    hgold_label = []
+    lgold_label = []
     for idx in range(batch_size):
-        pred = [label_alphabet.get_instance(pred_tag[idx][idy]) for idy in range(seq_len) if mask[idx][idy] != 0]
-        gold = [label_alphabet.get_instance(gold_tag[idx][idy]) for idy in range(seq_len) if mask[idx][idy] != 0]
-        assert(len(pred)==len(gold))
-        pred_label.append(pred)
-        gold_label.append(gold)
-    return pred_label, gold_label
+        hpred = [hlabel_alphabet.get_instance(hpred_tag[idx][idy]) for idy in range(seq_len) if mask[idx][idy] != 0]
+        lpred = [llabel_alphabet.get_instance(lpred_tag[idx][idy]) for idy in range(seq_len) if mask[idx][idy] != 0]
+
+        hgold = [hlabel_alphabet.get_instance(hgold_tag[idx][idy]) for idy in range(seq_len) if mask[idx][idy] != 0]
+        lgold = [llabel_alphabet.get_instance(lgold_tag[idx][idy]) for idy in range(seq_len) if mask[idx][idy] != 0]
+        assert(len(hpred)==len(hgold))
+        hpred_label.append(hpred)
+        lpred_label.append(lpred)
+        hgold_label.append(hgold)
+        lgold_label.append(lgold)
+    return hpred_label,lpred_label, hgold_label ,lgold_label
 
 def batchify_sequence_labeling_with_label(input_batch_list, gpu,max_sent_length, if_train=True):
-    """
-        input: list of words, chars and labels, various length. [[words, features, chars, labels],[words, features, chars,labels],...]
-            words: word ids for one sentence. (batch_size, sent_len)
-            features: features ids for one sentence. (batch_size, sent_len, feature_num)
-            chars: char ids for on sentences, various length. (batch_size, sent_len, each_word_length)
-            labels: label ids for one sentence. (batch_size, sent_len)
 
-        output:
-            zero padding for word and char, with their batch length
-            word_seq_tensor: (batch_size, max_sent_len) Variable
-            feature_seq_tensors: [(batch_size, max_sent_len),...] list of Variable
-            word_seq_lengths: (batch_size,1) Tensor
-            char_seq_tensor: (batch_size*max_sent_len, max_word_len) Variable
-            char_seq_lengths: (batch_size*max_sent_len,1) Tensor
-            char_seq_recover: (batch_size*max_sent_len,1)  recover char sequence order
-            label_seq_tensor: (batch_size, max_sent_len)
-            mask: (batch_size, max_sent_len)
-    """
     batch_size = len(input_batch_list)
 
     #cut too long texts
@@ -284,7 +282,6 @@ def batchify_sequence_labeling_with_label(input_batch_list, gpu,max_sent_length,
         char_seq_recover = char_seq_recover.cuda()
         mask = mask.cuda()
     return word_seq_tensor, word_seq_lengths, word_seq_recover, char_seq_tensor, char_seq_lengths, char_seq_recover, hlabel_seq_tensor,llabel_seq_tensor, mask
-
 
 if __name__ == '__main__':
     a = np.arange(9.0)
