@@ -135,7 +135,7 @@ def train(args,data,model):
     else:
         print("Optimizer illegal: %s"%(args.optimizer))
         exit(1)
-    best_dev = -10
+    best_dev = 0
 
     ## start training
     for idx in range(args.iteration):
@@ -225,7 +225,7 @@ def train(args,data,model):
             exit(1)
 
         # continue
-        H2B_evals,B2H_evals, H2B_results,B2H_results= evaluate(data, model,logger, "dev",best_dev=-1)
+        H2B_evals,B2H_evals, H2B_results,B2H_results= evaluate(data, model,logger, "dev",best_dev=best_dev)
         dev_finish = time.time()
         dev_cost = dev_finish - epoch_finish
 
