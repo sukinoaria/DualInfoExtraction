@@ -83,7 +83,7 @@ class CRF(nn.Module):
             cur_partition = log_sum_exp(cur_values, tag_size)
             # print cur_partition.data
 
-                # (bat_size * from_target * to_target) -> (bat_size * to_target)
+            # (bat_size * from_target * to_target) -> (bat_size * to_target)
             # partition = utils.switch(partition, cur_partition, mask[idx].view(bat_size, 1).expand(bat_size, self.tagset_size)).view(bat_size, -1)
             mask_idx = mask[idx, :].view(batch_size, 1).expand(batch_size, tag_size)
 
@@ -99,7 +99,6 @@ class CRF(nn.Module):
         cur_partition = log_sum_exp(cur_values, tag_size)
         final_partition = cur_partition[:, STOP_TAG]
         return final_partition.sum(), scores
-
 
     def _viterbi_decode(self, feats, mask):
         """
@@ -120,6 +119,7 @@ class CRF(nn.Module):
         mask = mask.transpose(1,0).contiguous()
         ins_num = seq_len * batch_size
         ## be careful the view shape, it is .view(ins_num, 1, tag_size) but not .view(ins_num, tag_size, 1)
+        #expand just copy ...5000,12 -> 5000,12,12
         feats = feats.transpose(1,0).contiguous().view(ins_num, 1, tag_size).expand(ins_num, tag_size, tag_size)
         ## need to consider start
         scores = feats + self.transitions.view(1,tag_size,tag_size).expand(ins_num, tag_size, tag_size)
@@ -146,6 +146,7 @@ class CRF(nn.Module):
             cur_values = cur_values + partition.contiguous().view(batch_size, tag_size, 1).expand(batch_size, tag_size, tag_size)
             ## forscores, cur_bp = torch.max(cur_values[:,:-2,:], 1) # do not consider START_TAG/STOP_TAG
             # print "cur value:", cur_values.size()
+            #cur_bp batch_size * tagsize ,cur timestep best score position
             partition, cur_bp = torch.max(cur_values, 1)
             # print "partsize:",partition.size()
             # exit(0)

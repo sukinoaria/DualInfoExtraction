@@ -5,13 +5,13 @@ def parse_argument():
 
     ###PATH Settings###
     parser.add_argument('--status', choices=['train', 'decode'], help='update algorithm', default='test')
-    parser.add_argument('--load_data', choices=[False, True], help='update algorithm', default=True)
+    parser.add_argument('--load_data', choices=[False, True], help='update algorithm', default=False)
     parser.add_argument('--load_data_name', default="output/dataset")
     parser.add_argument('--load_model_name', default="output/last.cpt")
 
-    parser.add_argument('--train', default="dataset/2layer/train.txt")
-    parser.add_argument('--dev', default="dataset/2layer/dev.txt" )
-    parser.add_argument('--test', default="dataset/2layer/test.txt")
+    parser.add_argument('--train', default="dataset/2layershort/train.txt")
+    parser.add_argument('--dev', default="dataset/2layershort/dev.txt" )
+    parser.add_argument('--test', default="dataset/2layershort/test.txt")
 
     parser.add_argument('--output_dir', default='output/')
     parser.add_argument('--decode_dir', default='output/decode.txt')
@@ -21,7 +21,7 @@ def parse_argument():
     parser.add_argument('--char_emb_dim', help='Embedding dim for chars', default=30)
     parser.add_argument('--word_emb_dim', help='Embedding dim for words', default=100)
 
-    parser.add_argument('--max_sent_length', type=int, default=500)
+    parser.add_argument('--max_sent_length', type=int, default=250)
 
     ###Networks
     parser.add_argument('--word_extractor', type=str,choices=['LSTM','CNN','GRU'], help='word level feature extractor', default='LSTM')

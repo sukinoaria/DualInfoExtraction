@@ -42,7 +42,7 @@ def lr_decay(optimizer, epoch, decay_rate, init_lr):
         param_group['lr'] = lr
     return optimizer
 
-def evaluate(data, model,logger, name):
+def evaluate(data, model,logger, name,best_dev = -1):
     if name == "train":
         instances = data.train_Ids
     elif name == "dev":
@@ -100,12 +100,20 @@ def evaluate(data, model,logger, name):
     B2H_results = [B2HH_pred_results,B2HB_pred_results]
 
     logger.info(
-        "DEV --HIGH layer: H2B MODEL  acc:%.4f , p: %.4f, r: %.4f, f: %.4f  B2H MODEL acc:%.4f , p: %.4f, r: %.4f, f: %.4f ." %
-        (H2BH_evals[0], H2BH_evals[1], H2BH_evals[2],H2BH_evals[3], B2HH_evals[0], B2HH_evals[1], B2HH_evals[2], B2HH_evals[3]))
+        "%s --HIGH layer: H2B MODEL  acc:%.4f , p: %.4f, r: %.4f, f: %.4f  B2H MODEL acc:%.4f , p: %.4f, r: %.4f, f: %.4f ." %
+        (name.upper(),H2BH_evals[0], H2BH_evals[1], H2BH_evals[2],H2BH_evals[3], B2HH_evals[0], B2HH_evals[1], B2HH_evals[2], B2HH_evals[3]))
 
     logger.info(
-        "DEV --BOT layer: H2B MODEL  p: %.4f, r: %.4f, f: %.4f  B2H MODEL  p: %.4f, r: %.4f, f: %.4f ." %
-        (H2BB_evals[0], H2BB_evals[1], H2BB_evals[2], B2HB_evals[0], B2HB_evals[1], B2HB_evals[2]))
+        "%s --BOT layer: H2B MODEL  p: %.4f, r: %.4f, f: %.4f  B2H MODEL  p: %.4f, r: %.4f, f: %.4f ." %
+        (name.upper(),H2BB_evals[0], H2BB_evals[1], H2BB_evals[2], B2HB_evals[0], B2HB_evals[1], B2HB_evals[2]))
+
+    logger.info(
+        "%s --ALL layer: H2B MODEL  p: %.4f, r: %.4f, f: %.4f  B2H MODEL  p: %.4f, r: %.4f, f: %.4f .best_f: %.4f" %
+        (name.upper(),H2B_evals[0], H2B_evals[1], H2B_evals[2], B2H_evals[0], B2H_evals[1], B2H_evals[2], best_dev))
+
+    print(
+        "%s --ALL layer: H2B MODEL  p: %.4f, r: %.4f, f: %.4f  B2H MODEL  p: %.4f, r: %.4f, f: %.4f .best_f: %.4f" %
+        (name.upper(),H2B_evals[0], H2B_evals[1], H2B_evals[2], B2H_evals[0], B2H_evals[1], B2H_evals[2], best_dev))
 
     return H2B_evals,B2H_evals, H2B_results,B2H_results
 
@@ -217,20 +225,12 @@ def train(args,data,model):
             exit(1)
 
         # continue
-        H2B_evals,B2H_evals, H2B_results,B2H_results= evaluate(data, model,logger, "dev")
+        H2B_evals,B2H_evals, H2B_results,B2H_results= evaluate(data, model,logger, "dev",best_dev=-1)
         dev_finish = time.time()
         dev_cost = dev_finish - epoch_finish
 
         #use h2b score as temp evaluation...
         current_score = H2B_evals[3]
-
-        logger.info(
-            "DEV --ALL layer: H2B MODEL  p: %.4f, r: %.4f, f: %.4f  B2H MODEL  p: %.4f, r: %.4f, f: %.4f .best_f: %.4f" %
-            (H2B_evals[0], H2B_evals[1], H2B_evals[2], B2H_evals[0], B2H_evals[1], B2H_evals[2], best_dev))
-
-        print(
-            "DEV --ALL layer: H2B MODEL  p: %.4f, r: %.4f, f: %.4f  B2H MODEL  p: %.4f, r: %.4f, f: %.4f .best_f: %.4f" %
-            (H2B_evals[0], H2B_evals[1], H2B_evals[2], B2H_evals[0], B2H_evals[1], B2H_evals[2], best_dev))
 
         if current_score > best_dev:
             print("New f score %f > previous %f ,Save current best model in file:%s" % (current_score,best_dev,args.load_model_name))
@@ -239,9 +239,9 @@ def train(args,data,model):
         gc.collect()
 
 def load_model_decode(args,data,model,name):
-    print("Load Model from file: ", args.model_dir)
+    print("Load Model from file... ")
 
-    model.load_state_dict(torch.load(args.load_model_name))
+    model.load_state_dict(torch.load(args.load_model_name,map_location='cpu'))
 
     print("Decode %s data ..."% name)
     start_time = time.time()
@@ -298,19 +298,12 @@ if __name__ == '__main__':
             model.to(torch.device("cuda"))
         model.show_model_summary(logger)
         test_start = time.time()
-        H2B_evals,B2H_evals, H2B_results,B2H_results= evaluate(data, model,logger, "test")
+        H2B_evals,B2H_evals, H2B_results,B2H_results= evaluate(data, model,logger, "test",best_dev=-1)
         test_cost = time.time() - test_start
-        logger.info(
-            "DEV --ALL layer: H2B MODEL  p: %.4f, r: %.4f, f: %.4f  B2H MODEL  p: %.4f, r: %.4f, f: %.4f ." %
-            (H2B_evals[0], H2B_evals[1], H2B_evals[2], B2H_evals[0], B2H_evals[1], B2H_evals[2]))
-
-        print(
-            "DEV --ALL layer: H2B MODEL  p: %.4f, r: %.4f, f: %.4f  B2H MODEL  p: %.4f, r: %.4f, f: %.4f " %
-            (H2B_evals[0], H2B_evals[1], H2B_evals[2], B2H_evals[0], B2H_evals[1], B2H_evals[2]))
 
     elif status == 'decode':
         print("MODEL: decode")
-        decode_results, pred_scores = load_model_decode(args,data,model,'test')
+        decode_results = load_model_decode(args,data,model,'test')
         data.write_decoded_results(decode_results, 'test')
     else:
         print("Invalid argument! Please use valid arguments! (train/test/decode)")
