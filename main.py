@@ -230,7 +230,7 @@ def train(args,data,model):
         dev_cost = dev_finish - epoch_finish
 
         #use h2b score as temp evaluation...
-        current_score = H2B_evals[3]
+        current_score = H2B_evals[2]
 
         if current_score > best_dev:
             print("New f score %f > previous %f ,Save current best model in file:%s" % (current_score,best_dev,args.load_model_name))
