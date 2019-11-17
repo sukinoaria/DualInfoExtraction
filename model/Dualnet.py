@@ -30,6 +30,10 @@ class Dualnet(nn.Module):
         self.average_batch_loss = args.average_batch_loss
         self.status = args.status
         ### Hyperparameters
+        self.H2BH = args.H2BH
+        self.H2BB = args.H2BB
+        self.B2HB = args.B2HB
+        self.B2HH = args.B2HH
 
         self.cnn_layer = args.cnn_layer
         self.iteration = args.iteration
@@ -114,6 +118,13 @@ class Dualnet(nn.Module):
         logger.info("     Iteration: %s" % (self.iteration))
         logger.info("     BatchSize: %s" % (self.batch_size))
         logger.info("     Average  batch   loss: %s" % (self.average_batch_loss))
+
+        logger.info(" " + "++" * 20)
+        logger.info(" Multi-Task Loss Weight:")
+        logger.info("     H2BH: {}".format(self.H2BH))
+        logger.info("     H2BB: {}".format(self.H2BB))
+        logger.info("     B2HB: {}".format(self.B2HB))
+        logger.info("     B2HH: {}".format(self.B2HH))
 
         logger.info(" " + "++" * 20)
         logger.info(" Hyperparameters:")

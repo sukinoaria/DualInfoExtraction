@@ -182,7 +182,7 @@ def train(args,data,model):
             sample_B2H_right_token += B2H_right
             sample_B2H_whole_token += B2H_whole
 
-            loss = H2BH_loss + H2BB_loss + B2HB_loss + B2HH_loss
+            loss = args.H2BH*H2BH_loss + args.H2BB*H2BB_loss + args.B2HB*B2HB_loss + args.B2HH*B2HH_loss
             sample_loss += loss.item()
             total_loss += loss.item()
             if end%(10*args.batch_size) == 0:
@@ -194,6 +194,13 @@ def train(args,data,model):
                          (sample_H2B_right_token + 0.)
                          / sample_H2B_whole_token, sample_B2H_right_token, sample_B2H_whole_token,
                          (sample_B2H_right_token + 0.) / sample_B2H_whole_token))
+
+                logger.info("     Instance: %s; Time: %.2fs; loss: %.4f; H2B acc: %s/%s=%.4f;B2H acc: %s/%s=%.4f"
+                      % (end, temp_cost, sample_loss, sample_H2B_right_token, sample_H2B_whole_token,
+                         (sample_H2B_right_token + 0.)
+                         / sample_H2B_whole_token, sample_B2H_right_token, sample_B2H_whole_token,
+                         (sample_B2H_right_token + 0.) / sample_B2H_whole_token))
+
                 if sample_loss > 1e8 or str(sample_loss) == "nan":
                     print("ERROR: LOSS EXPLOSION (>1e8) ! PLEASE SET PROPER PARAMETERS AND STRUCTURE! EXIT....")
                     exit(1)
@@ -211,6 +218,12 @@ def train(args,data,model):
         temp_time = time.time()
         temp_cost = temp_time - temp_start
         print("     Instance: %s; Time: %.2fs; loss: %.4f; H2B acc: %s/%s=%.4f;B2H acc: %s/%s=%.4f"
+              % (end, temp_cost, sample_loss, sample_H2B_right_token, sample_H2B_whole_token,
+                 (sample_H2B_right_token + 0.)
+                 / sample_H2B_whole_token, sample_B2H_right_token, sample_B2H_whole_token,
+                 (sample_B2H_right_token + 0.) / sample_B2H_whole_token))
+        #for Grid search Multi task loss lambda value ..
+        logger.info("     Instance: %s; Time: %.2fs; loss: %.4f; H2B acc: %s/%s=%.4f;B2H acc: %s/%s=%.4f"
               % (end, temp_cost, sample_loss, sample_H2B_right_token, sample_H2B_whole_token,
                  (sample_H2B_right_token + 0.)
                  / sample_H2B_whole_token, sample_B2H_right_token, sample_B2H_whole_token,
