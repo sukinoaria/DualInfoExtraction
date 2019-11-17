@@ -100,7 +100,7 @@ class Alphabet:
     def save(self, output_directory, name=None):
         """
         Save both alhpabet records to the given directory.
-        :param output_directory: Directory to save model and weights.
+        :param output_directory: Directory to save modules and weights.
         :param name: The alphabet saving name, optional.
         :return:
         """
@@ -112,9 +112,9 @@ class Alphabet:
 
     def load(self, input_directory, name=None):
         """
-        Load model architecture and weights from the give directory. This allow we use old models even the structure
+        Load modules architecture and weights from the give directory. This allow we use old models even the structure
         changes.
-        :param input_directory: Directory to save model and weights
+        :param input_directory: Directory to save modules and weights
         :return:
         """
         loading_name = name if name else self.__name

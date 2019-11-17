@@ -1,17 +1,13 @@
 import gc
 import os
-import sys
 import time
-import pickle
 import random
 import logging
 
-import torch
 import torch.nn as nn
 import torch.optim as optim
-import numpy as np
 
-from model.Dualnet import Dualnet
+from models.Dualnet import Dualnet
 
 from utils.data import Data
 from utils.functions import *
@@ -58,7 +54,7 @@ def evaluate(data, model,logger, name,best_dev = -1):
     B2HB_pred_results = []
     hgold_results = []
     lgold_results = []
-    ## set model in eval model
+    ## set modules in eval modules
     model.eval()
     batch_size = model.batch_size
     start_time = time.time()
@@ -118,7 +114,7 @@ def evaluate(data, model,logger, name,best_dev = -1):
     return H2B_evals,B2H_evals, H2B_results,B2H_results
 
 def train(args,data,model):
-    logger.info("Training model...")
+    logger.info("Training modules...")
     model.show_model_summary(logger)
     print("Training Parameters:%s",args)
 
@@ -141,7 +137,7 @@ def train(args,data,model):
     for idx in range(args.iteration):
         epoch_start = time.time()
         temp_start = epoch_start
-        #print("Epoch: %s/%s" %(idx,model.iteration))
+        #print("Epoch: %s/%s" %(idx,modules.iteration))
         if args.optimizer == "SGD":
             optimizer = lr_decay(optimizer, idx, args.lr_decay, args.lr)
         instance_count = 0
@@ -244,7 +240,7 @@ def train(args,data,model):
         current_score = H2B_evals[2]
 
         if current_score > best_dev:
-            print("New f score %f > previous %f ,Save current best model in file:%s" % (current_score,best_dev,args.load_model_name))
+            print("New f score %f > previous %f ,Save current best modules in file:%s" % (current_score,best_dev,args.load_model_name))
             torch.save(model.state_dict(), args.load_model_name)
             best_dev = current_score
         gc.collect()
@@ -285,7 +281,7 @@ if __name__ == '__main__':
             os.mkdir(args.output_dir)
         data.save(args.load_data_name)
 
-    #initial model...
+    #initial modules...
     model = Dualnet(args,data)
 
     if args.gpu:
