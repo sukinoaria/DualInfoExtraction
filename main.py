@@ -11,7 +11,7 @@ import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 
-from model.Dualnet import DualNet
+from model.Dualnet import Dualnet
 
 from utils.data import Data
 from utils.functions import *
@@ -226,8 +226,6 @@ def train(args,data,model):
 
         # continue
         H2B_evals,B2H_evals, H2B_results,B2H_results= evaluate(data, model,logger, "dev",best_dev=best_dev)
-        dev_finish = time.time()
-        dev_cost = dev_finish - epoch_finish
 
         #use h2b score as temp evaluation...
         current_score = H2B_evals[2]
@@ -244,11 +242,8 @@ def load_model_decode(args,data,model,name):
     model.load_state_dict(torch.load(args.load_model_name,map_location='cpu'))
 
     print("Decode %s data ..."% name)
-    start_time = time.time()
     H2B_evals,B2H_evals, H2B_results,B2H_results= evaluate(data, model, name)
-    end_time = time.time()
-    time_cost = end_time - start_time
-    #print("%s: time:%.2fs, speed:%.2fst/s; acc: %.4f, p: %.4f, r: %.4f, f: %.4f"%(name, time_cost, speed, acc, p, r, f))
+
     return H2B_results
 
 if __name__ == '__main__':
@@ -278,7 +273,7 @@ if __name__ == '__main__':
         data.save(args.load_data_name)
 
     #initial model...
-    model = DualNet(args,data)
+    model = Dualnet(args,data)
 
     if args.gpu:
         model.to(torch.device("cuda"))
@@ -297,9 +292,7 @@ if __name__ == '__main__':
         if args.gpu:
             model.to(torch.device("cuda"))
         model.show_model_summary(logger)
-        test_start = time.time()
         H2B_evals,B2H_evals, H2B_results,B2H_results= evaluate(data, model,logger, "test",best_dev=-1)
-        test_cost = time.time() - test_start
 
     elif status == 'decode':
         print("MODEL: decode")

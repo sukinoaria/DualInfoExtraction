@@ -5,7 +5,7 @@ def parse_argument():
 
     ###PATH Settings###
     parser.add_argument('--status', choices=['train', 'decode'], help='update algorithm', default='test')
-    parser.add_argument('--load_data', choices=[False, True], help='update algorithm', default=False)
+    parser.add_argument('--load_data', choices=[False, True], help='update algorithm', default=True)
     parser.add_argument('--load_data_name', default="output/dataset")
     parser.add_argument('--load_model_name', default="output/last.cpt")
 
@@ -21,7 +21,7 @@ def parse_argument():
     parser.add_argument('--char_emb_dim', help='Embedding dim for chars', default=30)
     parser.add_argument('--word_emb_dim', help='Embedding dim for words', default=100)
 
-    parser.add_argument('--max_sent_length', type=int, default=250)
+    parser.add_argument('--max_sent_length', type=int, default=200)
 
     ###Networks
     parser.add_argument('--word_extractor', type=str,choices=['LSTM','CNN','GRU'], help='word level feature extractor', default='LSTM')
@@ -37,7 +37,7 @@ def parse_argument():
 
     ### Hyperparameters
     parser.add_argument('--cnn_layer', type=int, default=4)
-    parser.add_argument('--char_hidden_dim', type=int, default=30)
+    parser.add_argument('--char_hidden_dim', type=int, default=50)
     parser.add_argument('--hidden_dim', type=int, default=200)
     parser.add_argument('--dropout', type=int, default=0.5)
     parser.add_argument('--lstm_layer', type=int, default=1)

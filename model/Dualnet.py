@@ -16,9 +16,9 @@ from .wordrep import WordRep
 from .BiLSTMCRF import BiLSTMCRF
 from .interunit import InterUnit
 
-class DualNet(nn.Module):
+class Dualnet(nn.Module):
     def __init__(self, args,data):
-        super(DualNet, self).__init__()
+        super(Dualnet, self).__init__()
 
         ###Networks
         self.word_feature_extractor =args.word_extractor

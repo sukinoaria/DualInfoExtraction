@@ -79,7 +79,7 @@ class BiLSTMCRF(nn.Module):
         outs = self.hidden2tag(feature_out)
 
         if self.use_crf:
-            total_loss = self.crf.neg_log_likelihood_loss(outs, mask, batch_label)
+            outs,total_loss = self.crf.neg_log_likelihood_loss(outs, mask, batch_label)
             scores, tag_seq = self.crf._viterbi_decode(outs, mask)
         else:
             loss_function = nn.NLLLoss(ignore_index=0, size_average=False)
@@ -108,6 +108,7 @@ class BiLSTMCRF(nn.Module):
         outs = self.hidden2tag(feature_out)
         if self.use_crf:
             scores, tag_seq = self.crf._viterbi_decode(outs, mask)
+            outs, _, _ = self.crf._calculate_PZ(outs, mask)
         else:
             outs = outs.view(batch_size * seq_len, -1)
             _, tag_seq = torch.max(outs, 1)

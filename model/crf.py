@@ -74,6 +74,10 @@ class CRF(nn.Module):
         ## add start score (from start to all tag, duplicate to batch_size)
         # partition = partition + self.transitions[START_TAG,:].view(1, tag_size, 1).expand(batch_size, tag_size, 1)
         # iter over last scores
+
+        #out feature LSTM-FC emit score + CRF transmission score
+        out_feats = []
+        out_feats.append(torch.squeeze(partition,-1))
         for idx, cur_values in seq_iter:
             # previous to_target is current from_target
             # partition: previous results log(exp(from_target)), #(batch_size * from_target)
@@ -81,7 +85,9 @@ class CRF(nn.Module):
 
             cur_values = cur_values + partition.contiguous().view(batch_size, tag_size, 1).expand(batch_size, tag_size, tag_size)
             cur_partition = log_sum_exp(cur_values, tag_size)
-            # print cur_partition.data
+
+            # temp use unmasked distribution for next layer
+            out_feats.append(cur_partition)
 
             # (bat_size * from_target * to_target) -> (bat_size * to_target)
             # partition = utils.switch(partition, cur_partition, mask[idx].view(bat_size, 1).expand(bat_size, self.tagset_size)).view(bat_size, -1)
@@ -98,7 +104,10 @@ class CRF(nn.Module):
         cur_values = self.transitions.view(1,tag_size, tag_size).expand(batch_size, tag_size, tag_size) + partition.contiguous().view(batch_size, tag_size, 1).expand(batch_size, tag_size, tag_size)
         cur_partition = log_sum_exp(cur_values, tag_size)
         final_partition = cur_partition[:, STOP_TAG]
-        return final_partition.sum(), scores
+
+        #process out_feats
+        outs = torch.stack(out_feats).transpose(1,0)
+        return outs,final_partition.sum(), scores
 
     def _viterbi_decode(self, feats, mask):
         """
@@ -196,8 +205,6 @@ class CRF(nn.Module):
         decode_idx = decode_idx.transpose(1,0)
         return path_score, decode_idx
 
-
-
     def forward(self, feats):
     	path_score, best_path = self._viterbi_decode(feats)
     	return path_score, best_path
@@ -257,8 +264,8 @@ class CRF(nn.Module):
     def neg_log_likelihood_loss(self, feats, mask, tags):
         # nonegative log likelihood
         batch_size = feats.size(0)
-        forward_score, scores = self._calculate_PZ(feats, mask)
+        outs,forward_score, scores = self._calculate_PZ(feats, mask)
         gold_score = self._score_sentence(scores, mask, tags)
         # print "batch, f:", forward_score.data[0], " g:", gold_score.data[0], " dis:", forward_score.data[0] - gold_score.data[0]
         # exit(0)
-        return forward_score - gold_score
+        return outs,forward_score - gold_score
