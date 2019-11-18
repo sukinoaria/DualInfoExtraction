@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                     datefmt='%m/%d/%Y %H:%M:%S',
                     level=logging.INFO,
-                    filename='output/output_H2B.log')
+                    filename='log/output_H2B.log')
 logger.info("\n\n")
 logger.info("Start Status Logging...")
 

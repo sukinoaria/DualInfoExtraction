@@ -1,0 +1,491 @@
+11/14/2019 15:14:07 - INFO - __main__ -   
+
+
+11/14/2019 15:14:07 - INFO - __main__ -   Start Status Logging...
+11/14/2019 15:23:58 - INFO - __main__ -   
+
+
+11/14/2019 15:23:58 - INFO - __main__ -   Start Status Logging...
+11/14/2019 15:24:00 - INFO - __main__ -   Training model...
+11/14/2019 15:24:00 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/14/2019 15:24:00 - INFO - __main__ -    Model Network:
+11/14/2019 15:24:00 - INFO - __main__ -        Model        use_crf: True
+11/14/2019 15:24:00 - INFO - __main__ -        Model word extractor: LSTM
+11/14/2019 15:24:00 - INFO - __main__ -        Model       use_char: True
+11/14/2019 15:24:00 - INFO - __main__ -        Model char extractor: LSTM
+11/14/2019 15:24:00 - INFO - __main__ -        Model char_hidden_dim: 30
+11/14/2019 15:24:00 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/14/2019 15:24:00 - INFO - __main__ -    Training:
+11/14/2019 15:24:00 - INFO - __main__ -        Optimizer: SGD
+11/14/2019 15:24:00 - INFO - __main__ -        Iteration: 50
+11/14/2019 15:24:00 - INFO - __main__ -        BatchSize: 10
+11/14/2019 15:24:00 - INFO - __main__ -        Average  batch   loss: False
+11/14/2019 15:24:00 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/14/2019 15:24:00 - INFO - __main__ -    Hyperparameters:
+11/14/2019 15:24:00 - INFO - __main__ -        Hyper              lr: 0.015
+11/14/2019 15:24:00 - INFO - __main__ -        Hyper        lr_decay: 0.05
+11/14/2019 15:24:00 - INFO - __main__ -        Hyper         HP_clip: 5
+11/14/2019 15:24:00 - INFO - __main__ -        Hyper        momentum: 0.9
+11/14/2019 15:24:00 - INFO - __main__ -        Hyper              l2: 1e-08
+11/14/2019 15:24:00 - INFO - __main__ -        Hyper      hidden_dim: 200
+11/14/2019 15:24:00 - INFO - __main__ -        Hyper         dropout: 0.5
+11/14/2019 15:24:00 - INFO - __main__ -        Hyper      lstm_layer: 1
+11/14/2019 15:24:00 - INFO - __main__ -        Hyper          bilstm: True
+11/14/2019 15:24:00 - INFO - __main__ -        Hyper             GPU: False
+11/14/2019 15:24:00 - INFO - __main__ -   Model SUMMARY END.
+11/14/2019 15:24:00 - INFO - __main__ -   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+11/14/2019 16:58:32 - INFO - __main__ -   
+
+
+11/14/2019 16:58:32 - INFO - __main__ -   Start Status Logging...
+11/14/2019 16:58:35 - INFO - __main__ -   Training model...
+11/14/2019 16:58:35 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/14/2019 16:58:35 - INFO - __main__ -    Model Network:
+11/14/2019 16:58:35 - INFO - __main__ -        Model        use_crf: True
+11/14/2019 16:58:35 - INFO - __main__ -        Model word extractor: LSTM
+11/14/2019 16:58:35 - INFO - __main__ -        Model       use_char: True
+11/14/2019 16:58:35 - INFO - __main__ -        Model char extractor: LSTM
+11/14/2019 16:58:35 - INFO - __main__ -        Model char_hidden_dim: 30
+11/14/2019 16:58:35 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/14/2019 16:58:35 - INFO - __main__ -    Training:
+11/14/2019 16:58:35 - INFO - __main__ -        Optimizer: SGD
+11/14/2019 16:58:35 - INFO - __main__ -        Iteration: 50
+11/14/2019 16:58:35 - INFO - __main__ -        BatchSize: 10
+11/14/2019 16:58:35 - INFO - __main__ -        Average  batch   loss: False
+11/14/2019 16:58:35 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/14/2019 16:58:35 - INFO - __main__ -    Hyperparameters:
+11/14/2019 16:58:35 - INFO - __main__ -        Hyper              lr: 0.015
+11/14/2019 16:58:35 - INFO - __main__ -        Hyper        lr_decay: 0.05
+11/14/2019 16:58:35 - INFO - __main__ -        Hyper         HP_clip: 5
+11/14/2019 16:58:35 - INFO - __main__ -        Hyper        momentum: 0.9
+11/14/2019 16:58:35 - INFO - __main__ -        Hyper              l2: 1e-08
+11/14/2019 16:58:35 - INFO - __main__ -        Hyper      hidden_dim: 200
+11/14/2019 16:58:35 - INFO - __main__ -        Hyper         dropout: 0.5
+11/14/2019 16:58:35 - INFO - __main__ -        Hyper      lstm_layer: 1
+11/14/2019 16:58:35 - INFO - __main__ -        Hyper          bilstm: True
+11/14/2019 16:58:35 - INFO - __main__ -        Hyper             GPU: False
+11/14/2019 16:58:35 - INFO - __main__ -   Model SUMMARY END.
+11/14/2019 16:58:35 - INFO - __main__ -   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+11/15/2019 09:28:43 - INFO - __main__ -   
+
+
+11/15/2019 09:28:43 - INFO - __main__ -   Start Status Logging...
+11/15/2019 09:29:23 - INFO - __main__ -   
+
+
+11/15/2019 09:29:23 - INFO - __main__ -   Start Status Logging...
+11/15/2019 09:33:14 - INFO - __main__ -   
+
+
+11/15/2019 09:33:14 - INFO - __main__ -   Start Status Logging...
+11/15/2019 09:34:23 - INFO - __main__ -   
+
+
+11/15/2019 09:34:23 - INFO - __main__ -   Start Status Logging...
+11/15/2019 09:34:41 - INFO - __main__ -   
+
+
+11/15/2019 09:34:41 - INFO - __main__ -   Start Status Logging...
+11/16/2019 10:14:59 - INFO - __main__ -   
+
+
+11/16/2019 10:14:59 - INFO - __main__ -   Start Status Logging...
+11/16/2019 10:16:04 - INFO - __main__ -   Training model...
+11/16/2019 10:16:04 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/16/2019 10:16:04 - INFO - __main__ -    Model Network:
+11/16/2019 10:16:04 - INFO - __main__ -        Model        use_crf: True
+11/16/2019 10:16:04 - INFO - __main__ -        Model word extractor: LSTM
+11/16/2019 10:16:04 - INFO - __main__ -        Model       use_char: True
+11/16/2019 10:16:04 - INFO - __main__ -        Model char extractor: LSTM
+11/16/2019 10:16:04 - INFO - __main__ -        Model char_hidden_dim: 30
+11/16/2019 10:16:04 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/16/2019 10:16:04 - INFO - __main__ -    Training:
+11/16/2019 10:16:04 - INFO - __main__ -        Optimizer: SGD
+11/16/2019 10:16:04 - INFO - __main__ -        Iteration: 50
+11/16/2019 10:16:04 - INFO - __main__ -        BatchSize: 10
+11/16/2019 10:16:04 - INFO - __main__ -        Average  batch   loss: False
+11/16/2019 10:16:04 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/16/2019 10:16:04 - INFO - __main__ -    Hyperparameters:
+11/16/2019 10:16:04 - INFO - __main__ -        Hyper              lr: 0.015
+11/16/2019 10:16:04 - INFO - __main__ -        Hyper        lr_decay: 0.05
+11/16/2019 10:16:04 - INFO - __main__ -        Hyper         HP_clip: 5
+11/16/2019 10:16:04 - INFO - __main__ -        Hyper        momentum: 0.9
+11/16/2019 10:16:04 - INFO - __main__ -        Hyper              l2: 1e-08
+11/16/2019 10:16:04 - INFO - __main__ -        Hyper      hidden_dim: 200
+11/16/2019 10:16:04 - INFO - __main__ -        Hyper         dropout: 0.5
+11/16/2019 10:16:04 - INFO - __main__ -        Hyper      lstm_layer: 1
+11/16/2019 10:16:04 - INFO - __main__ -        Hyper          bilstm: True
+11/16/2019 10:16:04 - INFO - __main__ -        Hyper             GPU: False
+11/16/2019 10:16:04 - INFO - __main__ -   Model SUMMARY END.
+11/16/2019 10:16:04 - INFO - __main__ -   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+11/16/2019 10:30:39 - INFO - __main__ -   
+
+
+11/16/2019 10:30:39 - INFO - __main__ -   Start Status Logging...
+11/16/2019 10:30:49 - INFO - __main__ -   
+
+
+11/16/2019 10:30:49 - INFO - __main__ -   Start Status Logging...
+11/16/2019 10:31:01 - INFO - __main__ -   
+
+
+11/16/2019 10:31:01 - INFO - __main__ -   Start Status Logging...
+11/16/2019 21:39:28 - INFO - __main__ -   
+
+
+11/16/2019 21:39:28 - INFO - __main__ -   Start Status Logging...
+11/16/2019 21:39:31 - INFO - __main__ -   Training model...
+11/16/2019 21:39:31 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/16/2019 21:39:31 - INFO - __main__ -    Model Network:
+11/16/2019 21:39:31 - INFO - __main__ -        Model        use_crf: True
+11/16/2019 21:39:31 - INFO - __main__ -        Model word extractor: LSTM
+11/16/2019 21:39:31 - INFO - __main__ -        Model       use_char: True
+11/16/2019 21:39:31 - INFO - __main__ -        Model char extractor: LSTM
+11/16/2019 21:39:31 - INFO - __main__ -        Model char_hidden_dim: 30
+11/16/2019 21:39:31 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/16/2019 21:39:31 - INFO - __main__ -    Training:
+11/16/2019 21:39:31 - INFO - __main__ -        Optimizer: SGD
+11/16/2019 21:39:31 - INFO - __main__ -        Iteration: 50
+11/16/2019 21:39:31 - INFO - __main__ -        BatchSize: 10
+11/16/2019 21:39:31 - INFO - __main__ -        Average  batch   loss: False
+11/16/2019 21:39:31 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/16/2019 21:39:31 - INFO - __main__ -    Hyperparameters:
+11/16/2019 21:39:31 - INFO - __main__ -        Hyper              lr: 0.015
+11/16/2019 21:39:31 - INFO - __main__ -        Hyper        lr_decay: 0.05
+11/16/2019 21:39:31 - INFO - __main__ -        Hyper         HP_clip: 5
+11/16/2019 21:39:31 - INFO - __main__ -        Hyper        momentum: 0.9
+11/16/2019 21:39:31 - INFO - __main__ -        Hyper              l2: 1e-08
+11/16/2019 21:39:31 - INFO - __main__ -        Hyper      hidden_dim: 200
+11/16/2019 21:39:31 - INFO - __main__ -        Hyper         dropout: 0.5
+11/16/2019 21:39:31 - INFO - __main__ -        Hyper      lstm_layer: 1
+11/16/2019 21:39:31 - INFO - __main__ -        Hyper          bilstm: True
+11/16/2019 21:39:31 - INFO - __main__ -        Hyper             GPU: False
+11/16/2019 21:39:31 - INFO - __main__ -   Model SUMMARY END.
+11/16/2019 21:39:31 - INFO - __main__ -   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+11/16/2019 21:42:12 - INFO - __main__ -   
+
+
+11/16/2019 21:42:12 - INFO - __main__ -   Start Status Logging...
+11/16/2019 21:42:14 - INFO - __main__ -   Training model...
+11/16/2019 21:42:14 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/16/2019 21:42:14 - INFO - __main__ -    Model Network:
+11/16/2019 21:42:14 - INFO - __main__ -        Model        use_crf: True
+11/16/2019 21:42:14 - INFO - __main__ -        Model word extractor: LSTM
+11/16/2019 21:42:14 - INFO - __main__ -        Model       use_char: True
+11/16/2019 21:42:14 - INFO - __main__ -        Model char extractor: LSTM
+11/16/2019 21:42:14 - INFO - __main__ -        Model char_hidden_dim: 30
+11/16/2019 21:42:14 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/16/2019 21:42:14 - INFO - __main__ -    Training:
+11/16/2019 21:42:14 - INFO - __main__ -        Optimizer: SGD
+11/16/2019 21:42:14 - INFO - __main__ -        Iteration: 50
+11/16/2019 21:42:14 - INFO - __main__ -        BatchSize: 5
+11/16/2019 21:42:14 - INFO - __main__ -        Average  batch   loss: False
+11/16/2019 21:42:14 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/16/2019 21:42:14 - INFO - __main__ -    Hyperparameters:
+11/16/2019 21:42:14 - INFO - __main__ -        Hyper              lr: 0.015
+11/16/2019 21:42:14 - INFO - __main__ -        Hyper        lr_decay: 0.05
+11/16/2019 21:42:14 - INFO - __main__ -        Hyper         HP_clip: 5
+11/16/2019 21:42:14 - INFO - __main__ -        Hyper        momentum: 0.9
+11/16/2019 21:42:14 - INFO - __main__ -        Hyper              l2: 1e-08
+11/16/2019 21:42:14 - INFO - __main__ -        Hyper      hidden_dim: 200
+11/16/2019 21:42:14 - INFO - __main__ -        Hyper         dropout: 0.5
+11/16/2019 21:42:14 - INFO - __main__ -        Hyper      lstm_layer: 1
+11/16/2019 21:42:14 - INFO - __main__ -        Hyper          bilstm: True
+11/16/2019 21:42:14 - INFO - __main__ -        Hyper             GPU: False
+11/16/2019 21:42:14 - INFO - __main__ -   Model SUMMARY END.
+11/16/2019 21:42:14 - INFO - __main__ -   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+11/17/2019 11:29:40 - INFO - __main__ -   
+
+
+11/17/2019 11:29:40 - INFO - __main__ -   Start Status Logging...
+11/17/2019 11:29:43 - INFO - __main__ -   Training model...
+11/17/2019 11:29:43 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 11:29:43 - INFO - __main__ -    Model Network:
+11/17/2019 11:29:43 - INFO - __main__ -        Model        use_crf: True
+11/17/2019 11:29:43 - INFO - __main__ -        Model word extractor: LSTM
+11/17/2019 11:29:43 - INFO - __main__ -        Model       use_char: True
+11/17/2019 11:29:43 - INFO - __main__ -        Model char extractor: LSTM
+11/17/2019 11:29:43 - INFO - __main__ -        Model char_hidden_dim: 30
+11/17/2019 11:29:43 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 11:29:43 - INFO - __main__ -    Training:
+11/17/2019 11:29:43 - INFO - __main__ -        Optimizer: SGD
+11/17/2019 11:29:43 - INFO - __main__ -        Iteration: 50
+11/17/2019 11:29:43 - INFO - __main__ -        BatchSize: 5
+11/17/2019 11:29:43 - INFO - __main__ -        Average  batch   loss: False
+11/17/2019 11:29:43 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 11:29:43 - INFO - __main__ -    Hyperparameters:
+11/17/2019 11:29:43 - INFO - __main__ -        Hyper              lr: 0.015
+11/17/2019 11:29:43 - INFO - __main__ -        Hyper        lr_decay: 0.05
+11/17/2019 11:29:43 - INFO - __main__ -        Hyper         HP_clip: 5
+11/17/2019 11:29:43 - INFO - __main__ -        Hyper        momentum: 0.9
+11/17/2019 11:29:43 - INFO - __main__ -        Hyper              l2: 1e-08
+11/17/2019 11:29:43 - INFO - __main__ -        Hyper      hidden_dim: 200
+11/17/2019 11:29:43 - INFO - __main__ -        Hyper         dropout: 0.5
+11/17/2019 11:29:43 - INFO - __main__ -        Hyper      lstm_layer: 1
+11/17/2019 11:29:43 - INFO - __main__ -        Hyper          bilstm: True
+11/17/2019 11:29:43 - INFO - __main__ -        Hyper             GPU: False
+11/17/2019 11:29:43 - INFO - __main__ -   Model SUMMARY END.
+11/17/2019 11:29:43 - INFO - __main__ -   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+11/17/2019 11:33:11 - INFO - __main__ -   
+
+
+11/17/2019 11:33:11 - INFO - __main__ -   Start Status Logging...
+11/17/2019 11:33:13 - INFO - __main__ -   Training model...
+11/17/2019 11:33:13 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 11:33:13 - INFO - __main__ -    Model Network:
+11/17/2019 11:33:13 - INFO - __main__ -        Model        use_crf: True
+11/17/2019 11:33:13 - INFO - __main__ -        Model word extractor: LSTM
+11/17/2019 11:33:13 - INFO - __main__ -        Model       use_char: True
+11/17/2019 11:33:13 - INFO - __main__ -        Model char extractor: LSTM
+11/17/2019 11:33:13 - INFO - __main__ -        Model char_hidden_dim: 30
+11/17/2019 11:33:13 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 11:33:13 - INFO - __main__ -    Training:
+11/17/2019 11:33:13 - INFO - __main__ -        Optimizer: SGD
+11/17/2019 11:33:13 - INFO - __main__ -        Iteration: 50
+11/17/2019 11:33:13 - INFO - __main__ -        BatchSize: 5
+11/17/2019 11:33:13 - INFO - __main__ -        Average  batch   loss: False
+11/17/2019 11:33:13 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 11:33:13 - INFO - __main__ -    Hyperparameters:
+11/17/2019 11:33:13 - INFO - __main__ -        Hyper              lr: 0.015
+11/17/2019 11:33:13 - INFO - __main__ -        Hyper        lr_decay: 0.05
+11/17/2019 11:33:13 - INFO - __main__ -        Hyper         HP_clip: 5
+11/17/2019 11:33:13 - INFO - __main__ -        Hyper        momentum: 0.9
+11/17/2019 11:33:13 - INFO - __main__ -        Hyper              l2: 1e-08
+11/17/2019 11:33:13 - INFO - __main__ -        Hyper      hidden_dim: 200
+11/17/2019 11:33:13 - INFO - __main__ -        Hyper         dropout: 0.5
+11/17/2019 11:33:13 - INFO - __main__ -        Hyper      lstm_layer: 1
+11/17/2019 11:33:13 - INFO - __main__ -        Hyper          bilstm: True
+11/17/2019 11:33:13 - INFO - __main__ -        Hyper             GPU: False
+11/17/2019 11:33:13 - INFO - __main__ -   Model SUMMARY END.
+11/17/2019 11:33:13 - INFO - __main__ -   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+11/17/2019 11:47:59 - INFO - __main__ -   
+
+
+11/17/2019 11:47:59 - INFO - __main__ -   Start Status Logging...
+11/17/2019 11:48:01 - INFO - __main__ -   Training model...
+11/17/2019 11:48:01 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 11:48:01 - INFO - __main__ -    Model Network:
+11/17/2019 11:48:01 - INFO - __main__ -        Model        use_crf: True
+11/17/2019 11:48:01 - INFO - __main__ -        Model word extractor: LSTM
+11/17/2019 11:48:01 - INFO - __main__ -        Model       use_char: True
+11/17/2019 11:48:01 - INFO - __main__ -        Model char extractor: LSTM
+11/17/2019 11:48:01 - INFO - __main__ -        Model char_hidden_dim: 30
+11/17/2019 11:48:01 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 11:48:01 - INFO - __main__ -    Training:
+11/17/2019 11:48:01 - INFO - __main__ -        Optimizer: SGD
+11/17/2019 11:48:01 - INFO - __main__ -        Iteration: 50
+11/17/2019 11:48:01 - INFO - __main__ -        BatchSize: 5
+11/17/2019 11:48:01 - INFO - __main__ -        Average  batch   loss: False
+11/17/2019 11:48:01 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 11:48:01 - INFO - __main__ -    Hyperparameters:
+11/17/2019 11:48:01 - INFO - __main__ -        Hyper              lr: 0.015
+11/17/2019 11:48:01 - INFO - __main__ -        Hyper        lr_decay: 0.05
+11/17/2019 11:48:01 - INFO - __main__ -        Hyper         HP_clip: 5
+11/17/2019 11:48:01 - INFO - __main__ -        Hyper        momentum: 0.9
+11/17/2019 11:48:01 - INFO - __main__ -        Hyper              l2: 1e-08
+11/17/2019 11:48:01 - INFO - __main__ -        Hyper      hidden_dim: 200
+11/17/2019 11:48:01 - INFO - __main__ -        Hyper         dropout: 0.5
+11/17/2019 11:48:01 - INFO - __main__ -        Hyper      lstm_layer: 1
+11/17/2019 11:48:01 - INFO - __main__ -        Hyper          bilstm: True
+11/17/2019 11:48:01 - INFO - __main__ -        Hyper             GPU: False
+11/17/2019 11:48:01 - INFO - __main__ -   Model SUMMARY END.
+11/17/2019 11:48:01 - INFO - __main__ -   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+11/17/2019 11:55:24 - INFO - __main__ -   
+
+
+11/17/2019 11:55:24 - INFO - __main__ -   Start Status Logging...
+11/17/2019 11:57:04 - INFO - __main__ -   
+
+
+11/17/2019 11:57:04 - INFO - __main__ -   Start Status Logging...
+11/17/2019 11:57:06 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 11:57:06 - INFO - __main__ -    Model Network:
+11/17/2019 11:57:06 - INFO - __main__ -        Model        use_crf: True
+11/17/2019 11:57:06 - INFO - __main__ -        Model word extractor: LSTM
+11/17/2019 11:57:06 - INFO - __main__ -        Model       use_char: True
+11/17/2019 11:57:06 - INFO - __main__ -        Model char extractor: LSTM
+11/17/2019 11:57:06 - INFO - __main__ -        Model char_hidden_dim: 50
+11/17/2019 11:57:06 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 11:57:06 - INFO - __main__ -    Training:
+11/17/2019 11:57:06 - INFO - __main__ -        Optimizer: SGD
+11/17/2019 11:57:06 - INFO - __main__ -        Iteration: 50
+11/17/2019 11:57:06 - INFO - __main__ -        BatchSize: 10
+11/17/2019 11:57:06 - INFO - __main__ -        Average  batch   loss: False
+11/17/2019 11:57:06 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 11:57:06 - INFO - __main__ -    Hyperparameters:
+11/17/2019 11:57:06 - INFO - __main__ -        Hyper              lr: 0.015
+11/17/2019 11:57:06 - INFO - __main__ -        Hyper        lr_decay: 0.05
+11/17/2019 11:57:06 - INFO - __main__ -        Hyper         HP_clip: 5
+11/17/2019 11:57:06 - INFO - __main__ -        Hyper        momentum: 0.9
+11/17/2019 11:57:06 - INFO - __main__ -        Hyper              l2: 1e-08
+11/17/2019 11:57:06 - INFO - __main__ -        Hyper      hidden_dim: 200
+11/17/2019 11:57:06 - INFO - __main__ -        Hyper         dropout: 0.5
+11/17/2019 11:57:06 - INFO - __main__ -        Hyper      lstm_layer: 1
+11/17/2019 11:57:06 - INFO - __main__ -        Hyper          bilstm: True
+11/17/2019 11:57:06 - INFO - __main__ -        Hyper             GPU: False
+11/17/2019 11:57:06 - INFO - __main__ -   Model SUMMARY END.
+11/17/2019 11:57:06 - INFO - __main__ -   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+11/17/2019 15:17:14 - INFO - __main__ -   
+
+
+11/17/2019 15:17:14 - INFO - __main__ -   Start Status Logging...
+11/17/2019 15:17:17 - INFO - __main__ -   Training model...
+11/17/2019 15:17:17 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 15:17:17 - INFO - __main__ -    Model Network:
+11/17/2019 15:17:17 - INFO - __main__ -        Model        use_crf: True
+11/17/2019 15:17:17 - INFO - __main__ -        Model word extractor: LSTM
+11/17/2019 15:17:17 - INFO - __main__ -        Model       use_char: True
+11/17/2019 15:17:17 - INFO - __main__ -        Model char extractor: LSTM
+11/17/2019 15:17:17 - INFO - __main__ -        Model char_hidden_dim: 50
+11/17/2019 15:17:17 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 15:17:17 - INFO - __main__ -    Training:
+11/17/2019 15:17:17 - INFO - __main__ -        Optimizer: SGD
+11/17/2019 15:17:17 - INFO - __main__ -        Iteration: 50
+11/17/2019 15:17:17 - INFO - __main__ -        BatchSize: 10
+11/17/2019 15:17:17 - INFO - __main__ -        Average  batch   loss: False
+11/17/2019 15:17:17 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 15:17:17 - INFO - __main__ -    Hyperparameters:
+11/17/2019 15:17:17 - INFO - __main__ -        Hyper              lr: 0.015
+11/17/2019 15:17:17 - INFO - __main__ -        Hyper        lr_decay: 0.05
+11/17/2019 15:17:17 - INFO - __main__ -        Hyper         HP_clip: 5
+11/17/2019 15:17:17 - INFO - __main__ -        Hyper        momentum: 0.9
+11/17/2019 15:17:17 - INFO - __main__ -        Hyper              l2: 1e-08
+11/17/2019 15:17:17 - INFO - __main__ -        Hyper      hidden_dim: 200
+11/17/2019 15:17:17 - INFO - __main__ -        Hyper         dropout: 0.5
+11/17/2019 15:17:17 - INFO - __main__ -        Hyper      lstm_layer: 1
+11/17/2019 15:17:17 - INFO - __main__ -        Hyper          bilstm: True
+11/17/2019 15:17:17 - INFO - __main__ -        Hyper             GPU: False
+11/17/2019 15:17:17 - INFO - __main__ -   Model SUMMARY END.
+11/17/2019 15:17:17 - INFO - __main__ -   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+11/17/2019 19:34:50 - INFO - __main__ -   
+
+
+11/17/2019 19:34:50 - INFO - __main__ -   Start Status Logging...
+11/17/2019 19:34:53 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 19:34:53 - INFO - __main__ -    Model Network:
+11/17/2019 19:34:53 - INFO - __main__ -        Model        use_crf: True
+11/17/2019 19:34:53 - INFO - __main__ -        Model word extractor: LSTM
+11/17/2019 19:34:53 - INFO - __main__ -        Model       use_char: True
+11/17/2019 19:34:53 - INFO - __main__ -        Model char extractor: LSTM
+11/17/2019 19:34:53 - INFO - __main__ -        Model char_hidden_dim: 50
+11/17/2019 19:34:53 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 19:34:53 - INFO - __main__ -    Training:
+11/17/2019 19:34:53 - INFO - __main__ -        Optimizer: SGD
+11/17/2019 19:34:53 - INFO - __main__ -        Iteration: 50
+11/17/2019 19:34:53 - INFO - __main__ -        BatchSize: 10
+11/17/2019 19:34:53 - INFO - __main__ -        Average  batch   loss: False
+11/17/2019 19:34:53 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 19:34:53 - INFO - __main__ -    Hyperparameters:
+11/17/2019 19:34:53 - INFO - __main__ -        Hyper              lr: 0.015
+11/17/2019 19:34:53 - INFO - __main__ -        Hyper        lr_decay: 0.05
+11/17/2019 19:34:53 - INFO - __main__ -        Hyper         HP_clip: 5
+11/17/2019 19:34:53 - INFO - __main__ -        Hyper        momentum: 0.9
+11/17/2019 19:34:53 - INFO - __main__ -        Hyper              l2: 1e-08
+11/17/2019 19:34:53 - INFO - __main__ -        Hyper      hidden_dim: 200
+11/17/2019 19:34:53 - INFO - __main__ -        Hyper         dropout: 0.5
+11/17/2019 19:34:53 - INFO - __main__ -        Hyper      lstm_layer: 1
+11/17/2019 19:34:53 - INFO - __main__ -        Hyper          bilstm: True
+11/17/2019 19:34:53 - INFO - __main__ -        Hyper             GPU: False
+11/17/2019 19:34:53 - INFO - __main__ -   Model SUMMARY END.
+11/17/2019 19:34:53 - INFO - __main__ -   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+11/17/2019 19:35:04 - INFO - __main__ -   
+
+
+11/17/2019 19:35:04 - INFO - __main__ -   Start Status Logging...
+11/17/2019 19:35:06 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 19:35:06 - INFO - __main__ -    Model Network:
+11/17/2019 19:35:06 - INFO - __main__ -        Model        use_crf: True
+11/17/2019 19:35:06 - INFO - __main__ -        Model word extractor: LSTM
+11/17/2019 19:35:06 - INFO - __main__ -        Model       use_char: True
+11/17/2019 19:35:06 - INFO - __main__ -        Model char extractor: LSTM
+11/17/2019 19:35:06 - INFO - __main__ -        Model char_hidden_dim: 50
+11/17/2019 19:35:06 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 19:35:06 - INFO - __main__ -    Training:
+11/17/2019 19:35:06 - INFO - __main__ -        Optimizer: SGD
+11/17/2019 19:35:06 - INFO - __main__ -        Iteration: 50
+11/17/2019 19:35:06 - INFO - __main__ -        BatchSize: 10
+11/17/2019 19:35:06 - INFO - __main__ -        Average  batch   loss: False
+11/17/2019 19:35:06 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 19:35:06 - INFO - __main__ -    Hyperparameters:
+11/17/2019 19:35:06 - INFO - __main__ -        Hyper              lr: 0.015
+11/17/2019 19:35:06 - INFO - __main__ -        Hyper        lr_decay: 0.05
+11/17/2019 19:35:06 - INFO - __main__ -        Hyper         HP_clip: 5
+11/17/2019 19:35:06 - INFO - __main__ -        Hyper        momentum: 0.9
+11/17/2019 19:35:06 - INFO - __main__ -        Hyper              l2: 1e-08
+11/17/2019 19:35:06 - INFO - __main__ -        Hyper      hidden_dim: 200
+11/17/2019 19:35:06 - INFO - __main__ -        Hyper         dropout: 0.5
+11/17/2019 19:35:06 - INFO - __main__ -        Hyper      lstm_layer: 1
+11/17/2019 19:35:06 - INFO - __main__ -        Hyper          bilstm: True
+11/17/2019 19:35:06 - INFO - __main__ -        Hyper             GPU: False
+11/17/2019 19:35:06 - INFO - __main__ -   Model SUMMARY END.
+11/17/2019 19:35:06 - INFO - __main__ -   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+11/17/2019 19:48:34 - INFO - __main__ -   
+
+
+11/17/2019 19:48:34 - INFO - __main__ -   Start Status Logging...
+11/17/2019 19:48:35 - INFO - __main__ -   Training model...
+11/17/2019 19:48:35 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 19:48:35 - INFO - __main__ -    Model Network:
+11/17/2019 19:48:35 - INFO - __main__ -        Model        use_crf: True
+11/17/2019 19:48:35 - INFO - __main__ -        Model word extractor: LSTM
+11/17/2019 19:48:35 - INFO - __main__ -        Model       use_char: True
+11/17/2019 19:48:35 - INFO - __main__ -        Model char extractor: LSTM
+11/17/2019 19:48:35 - INFO - __main__ -        Model char_hidden_dim: 50
+11/17/2019 19:48:35 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 19:48:35 - INFO - __main__ -    Training:
+11/17/2019 19:48:35 - INFO - __main__ -        Optimizer: SGD
+11/17/2019 19:48:35 - INFO - __main__ -        Iteration: 50
+11/17/2019 19:48:35 - INFO - __main__ -        BatchSize: 10
+11/17/2019 19:48:35 - INFO - __main__ -        Average  batch   loss: False
+11/17/2019 19:48:35 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 19:48:35 - INFO - __main__ -    Hyperparameters:
+11/17/2019 19:48:35 - INFO - __main__ -        Hyper              lr: 0.015
+11/17/2019 19:48:35 - INFO - __main__ -        Hyper        lr_decay: 0.05
+11/17/2019 19:48:35 - INFO - __main__ -        Hyper         HP_clip: 5
+11/17/2019 19:48:35 - INFO - __main__ -        Hyper        momentum: 0.9
+11/17/2019 19:48:35 - INFO - __main__ -        Hyper              l2: 1e-08
+11/17/2019 19:48:35 - INFO - __main__ -        Hyper      hidden_dim: 200
+11/17/2019 19:48:35 - INFO - __main__ -        Hyper         dropout: 0.5
+11/17/2019 19:48:35 - INFO - __main__ -        Hyper      lstm_layer: 1
+11/17/2019 19:48:35 - INFO - __main__ -        Hyper          bilstm: True
+11/17/2019 19:48:35 - INFO - __main__ -        Hyper             GPU: False
+11/17/2019 19:48:35 - INFO - __main__ -   Model SUMMARY END.
+11/17/2019 19:48:35 - INFO - __main__ -   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+11/17/2019 22:05:37 - INFO - __main__ -   
+
+
+11/17/2019 22:05:37 - INFO - __main__ -   Start Status Logging...
+11/17/2019 22:05:39 - INFO - __main__ -   Training modules...
+11/17/2019 22:05:39 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 22:05:39 - INFO - __main__ -    Model Network:
+11/17/2019 22:05:39 - INFO - __main__ -        Model        use_crf: True
+11/17/2019 22:05:39 - INFO - __main__ -        Model word extractor: LSTM
+11/17/2019 22:05:39 - INFO - __main__ -        Model       use_char: True
+11/17/2019 22:05:39 - INFO - __main__ -        Model char extractor: LSTM
+11/17/2019 22:05:39 - INFO - __main__ -        Model char_hidden_dim: 50
+11/17/2019 22:05:39 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 22:05:39 - INFO - __main__ -    Training:
+11/17/2019 22:05:39 - INFO - __main__ -        Optimizer: SGD
+11/17/2019 22:05:39 - INFO - __main__ -        Iteration: 50
+11/17/2019 22:05:39 - INFO - __main__ -        BatchSize: 10
+11/17/2019 22:05:39 - INFO - __main__ -        Average  batch   loss: False
+11/17/2019 22:05:39 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 22:05:39 - INFO - __main__ -    Multi-Task Loss Weight:
+11/17/2019 22:05:39 - INFO - __main__ -        H2BH: 1.0
+11/17/2019 22:05:39 - INFO - __main__ -        H2BB: 1.0
+11/17/2019 22:05:39 - INFO - __main__ -        B2HB: 1.0
+11/17/2019 22:05:39 - INFO - __main__ -        B2HH: 1.0
+11/17/2019 22:05:39 - INFO - __main__ -    ++++++++++++++++++++++++++++++++++++++++
+11/17/2019 22:05:39 - INFO - __main__ -    Hyperparameters:
+11/17/2019 22:05:39 - INFO - __main__ -        Hyper              lr: 0.015
+11/17/2019 22:05:39 - INFO - __main__ -        Hyper        lr_decay: 0.05
+11/17/2019 22:05:39 - INFO - __main__ -        Hyper         HP_clip: 5
+11/17/2019 22:05:39 - INFO - __main__ -        Hyper        momentum: 0.9
+11/17/2019 22:05:39 - INFO - __main__ -        Hyper              l2: 1e-08
+11/17/2019 22:05:39 - INFO - __main__ -        Hyper      hidden_dim: 200
+11/17/2019 22:05:39 - INFO - __main__ -        Hyper         dropout: 0.5
+11/17/2019 22:05:39 - INFO - __main__ -        Hyper      lstm_layer: 1
+11/17/2019 22:05:39 - INFO - __main__ -        Hyper          bilstm: True
+11/17/2019 22:05:39 - INFO - __main__ -        Hyper             GPU: False
+11/17/2019 22:05:39 - INFO - __main__ -   Model SUMMARY END.
+11/17/2019 22:05:39 - INFO - __main__ -   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
