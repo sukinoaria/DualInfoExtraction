@@ -56,8 +56,8 @@ class Dualnet(nn.Module):
         self.wordrep = WordRep(args, data)
 
         # information interaction unit
-        self.inter_unit = InterUnit(args.word_emb_dim + args.char_hidden_dim, data.hlabelset_size + 2,
-                                    data.llabelset_size + 2, 1, F.relu)
+        self.inter_unit = InterUnit(args.word_emb_dim + args.char_hidden_dim, data.hlabelset_size,
+                                    data.llabelset_size, 1, F.relu)
 
         # component of Dual modules
         self.H_ner = BiLSTMCRF(args,input_size=args.char_hidden_dim+args.word_emb_dim,

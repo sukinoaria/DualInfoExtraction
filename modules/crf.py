@@ -64,7 +64,7 @@ class CRF(nn.Module):
         feats = feats.transpose(1,0).contiguous().view(ins_num,1, tag_size).expand(ins_num, tag_size, tag_size)
         ## need to consider start
         scores = feats + self.transitions.view(1,tag_size,tag_size).expand(ins_num, tag_size, tag_size)
-        out_feats = log_sum_exp(scores,tag_size).view(batch_size,seq_len,tag_size)
+        out_feats = log_sum_exp(scores,tag_size)[:,:-2].view(batch_size,seq_len,-1)
         scores = scores.view(seq_len, batch_size, tag_size, tag_size)
         # build iter
         seq_iter = enumerate(scores)
@@ -125,7 +125,7 @@ class CRF(nn.Module):
         feats = feats.transpose(1,0).contiguous().view(ins_num, 1, tag_size).expand(ins_num, tag_size, tag_size)
         ## need to consider start
         scores = feats + self.transitions.view(1,tag_size,tag_size).expand(ins_num, tag_size, tag_size)
-        out_feats = log_sum_exp(scores,tag_size).view(batch_size,seq_len,tag_size)
+        out_feats = log_sum_exp(scores,tag_size)[:,:-2].view(batch_size,seq_len,-1)
         scores = scores.view(seq_len, batch_size, tag_size, tag_size)
 
         # build iter
