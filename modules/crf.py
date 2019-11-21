@@ -38,8 +38,8 @@ class CRF(nn.Module):
         init_transitions = torch.zeros(self.tagset_size+2, self.tagset_size+2)
         init_transitions[:,START_TAG] = -10000.0
         init_transitions[STOP_TAG,:] = -10000.0
-        init_transitions[:,0] = -10000.0
-        init_transitions[0,:] = -10000.0
+        #init_transitions[:,0] = -10000.0
+        #init_transitions[0,:] = -10000.0
         if self.gpu:
             init_transitions = init_transitions.cuda()
         self.transitions = nn.Parameter(init_transitions)
@@ -64,6 +64,7 @@ class CRF(nn.Module):
         feats = feats.transpose(1,0).contiguous().view(ins_num,1, tag_size).expand(ins_num, tag_size, tag_size)
         ## need to consider start
         scores = feats + self.transitions.view(1,tag_size,tag_size).expand(ins_num, tag_size, tag_size)
+        out_feats = log_sum_exp(scores,tag_size).view(batch_size,seq_len,tag_size)
         scores = scores.view(seq_len, batch_size, tag_size, tag_size)
         # build iter
         seq_iter = enumerate(scores)
@@ -76,8 +77,6 @@ class CRF(nn.Module):
         # iter over last scores
 
         #out feature LSTM-FC emit score + CRF transmission score
-        out_feats = []
-        out_feats.append(torch.squeeze(partition,-1))
         for idx, cur_values in seq_iter:
             # previous to_target is current from_target
             # partition: previous results log(exp(from_target)), #(batch_size * from_target)
@@ -85,10 +84,6 @@ class CRF(nn.Module):
 
             cur_values = cur_values + partition.contiguous().view(batch_size, tag_size, 1).expand(batch_size, tag_size, tag_size)
             cur_partition = log_sum_exp(cur_values, tag_size)
-
-            # temp use unmasked distribution for next layer
-            out_feats.append(cur_partition)
-
             # (bat_size * from_target * to_target) -> (bat_size * to_target)
             # partition = utils.switch(partition, cur_partition, mask[idx].view(bat_size, 1).expand(bat_size, self.tagset_size)).view(bat_size, -1)
             mask_idx = mask[idx, :].view(batch_size, 1).expand(batch_size, tag_size)
@@ -105,9 +100,7 @@ class CRF(nn.Module):
         cur_partition = log_sum_exp(cur_values, tag_size)
         final_partition = cur_partition[:, STOP_TAG]
 
-        #process out_feats
-        outs = torch.stack(out_feats).transpose(1,0)
-        return outs,final_partition.sum(), scores
+        return out_feats,final_partition.sum(), scores
 
     def _viterbi_decode(self, feats, mask):
         """
@@ -132,6 +125,7 @@ class CRF(nn.Module):
         feats = feats.transpose(1,0).contiguous().view(ins_num, 1, tag_size).expand(ins_num, tag_size, tag_size)
         ## need to consider start
         scores = feats + self.transitions.view(1,tag_size,tag_size).expand(ins_num, tag_size, tag_size)
+        out_feats = log_sum_exp(scores,tag_size).view(batch_size,seq_len,tag_size)
         scores = scores.view(seq_len, batch_size, tag_size, tag_size)
 
         # build iter
@@ -203,7 +197,7 @@ class CRF(nn.Module):
             decode_idx[idx] = pointer.detach().view(batch_size)
         path_score = None
         decode_idx = decode_idx.transpose(1,0)
-        return path_score, decode_idx
+        return out_feats,path_score, decode_idx
 
     def forward(self, feats):
     	path_score, best_path = self._viterbi_decode(feats)

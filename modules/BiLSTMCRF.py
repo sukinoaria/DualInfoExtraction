@@ -79,8 +79,8 @@ class BiLSTMCRF(nn.Module):
         outs = self.hidden2tag(feature_out)
 
         if self.use_crf:
-            outs,total_loss = self.crf.neg_log_likelihood_loss(outs, mask, batch_label)
-            scores, tag_seq = self.crf._viterbi_decode(outs, mask)
+            out_feats,total_loss = self.crf.neg_log_likelihood_loss(outs, mask, batch_label)
+            _,scores, tag_seq = self.crf._viterbi_decode(outs, mask)
         else:
             loss_function = nn.NLLLoss(ignore_index=0, size_average=False)
             outs = outs.view(batch_size * seq_len, -1)
@@ -91,7 +91,7 @@ class BiLSTMCRF(nn.Module):
         if self.average_batch:
             total_loss = total_loss / batch_size
 
-        return outs,total_loss,tag_seq
+        return out_feats,total_loss,tag_seq
 
 
     def forward(self,word_represent, word_seq_lengths,mask):
@@ -107,15 +107,14 @@ class BiLSTMCRF(nn.Module):
         ## feature_out (batch_size, seq_len, hidden_size)
         outs = self.hidden2tag(feature_out)
         if self.use_crf:
-            scores, tag_seq = self.crf._viterbi_decode(outs, mask)
-            outs, _, _ = self.crf._calculate_PZ(outs, mask)
+            out_feats,scores, tag_seq = self.crf._viterbi_decode(outs, mask)
         else:
             outs = outs.view(batch_size * seq_len, -1)
             _, tag_seq = torch.max(outs, 1)
             tag_seq = tag_seq.view(batch_size, seq_len)
             ## filter padded position with zero
             tag_seq = mask.long() * tag_seq
-        return outs,tag_seq
+        return out_feats,tag_seq
 
     def sentence_representation(self, word_represent, word_seq_lengths):
         """
