@@ -3,9 +3,12 @@ import argparse
 def parse_argument():
     parser = argparse.ArgumentParser(description='Tuning with NCRF++')
 
-    ###PATH Settings###
+    ###Model Settings###
+    parser.add_argument('--model', choices=['dual','h2b', 'b2h'], help='model architecture select', default='dual')
     parser.add_argument('--status', choices=['train', 'decode'], help='update algorithm', default='train')
     parser.add_argument('--load_data', choices=[False, True], help='update algorithm', default=True)
+
+    ###PATH Settings###
     parser.add_argument('--load_data_name', default="output/dataset")
     parser.add_argument('--load_model_name', default="output/last.cpt")
 

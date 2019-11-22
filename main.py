@@ -8,6 +8,8 @@ import torch.nn as nn
 import torch.optim as optim
 
 from models.Dualnet import Dualnet
+from models.B2H import B2H
+from models.H2B import H2B
 
 from utils.data import Data
 from utils.functions import *
@@ -23,13 +25,6 @@ torch.manual_seed(seed_num)
 np.random.seed(seed_num)
 
 logger = logging.getLogger(__name__)
-
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
-                    datefmt='%m/%d/%Y %H:%M:%S',
-                    level=logging.INFO,
-                    filename='log/output.log')
-logger.info("\n\n")
-logger.info("Start Status Logging...")
 
 def lr_decay(optimizer, epoch, decay_rate, init_lr):
     lr = init_lr/(1+decay_rate*epoch)
@@ -244,7 +239,7 @@ def train(args,data,model):
         H2B_evals,B2H_evals, H2B_results,B2H_results= evaluate(data, model,logger, "dev",best_dev=best_dev)
 
         #use h2b score as temp evaluation...
-        current_score = H2B_evals[2]
+        current_score = B2H_evals[2]
 
         if current_score > best_dev:
             print("New f score %f > previous %f ,Save current best modules in file:%s" % (current_score,best_dev,args.load_model_name))
@@ -264,8 +259,17 @@ def load_model_decode(args,data,model,name):
 
 if __name__ == '__main__':
 
+    #process args ...
     args = parse_argument()
     args.gpu = torch.cuda.is_available()
+    args.load_model_name += "_"+args.model
+
+    logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
+                        datefmt='%m/%d/%Y %H:%M:%S',
+                        level=logging.INFO,
+                        filename='log/output_'+args.model+'.log')
+    logger.info("\n\n")
+    logger.info("Start Status Logging...")
 
     #Load data
     data = Data(args)
@@ -289,7 +293,14 @@ if __name__ == '__main__':
         data.save(args.load_data_name)
 
     #initial modules...
-    model = Dualnet(args,data)
+    if args.model == "dual":
+        model = Dualnet(args,data)
+    elif args.model == "b2h":
+        model = B2H(args, data)
+    elif args.model == "h2b":
+        model = H2B(args, data)
+    else:
+        raise TypeError("Invalid Model Type!!!")
 
     if args.gpu:
         model.to(torch.device("cuda"))
