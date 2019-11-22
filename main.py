@@ -96,19 +96,19 @@ def evaluate(data, model,logger, name,best_dev = -1):
     B2H_results = [B2HH_pred_results,B2HB_pred_results]
 
     logger.info(
-        "%s --HIGH layer: H2B MODEL  acc:%.4f , p: %.4f, r: %.4f, f: %.4f  B2H MODEL acc:%.4f , p: %.4f, r: %.4f, f: %.4f ." %
+        "%s --HIGH layer: H2B MODEL  acc:%.4f , p: %.4f, r: %.4f, f: %.4f ||||| B2H MODEL acc:%.4f , p: %.4f, r: %.4f, f: %.4f ." %
         (name.upper(),H2BH_evals[0], H2BH_evals[1], H2BH_evals[2],H2BH_evals[3], B2HH_evals[0], B2HH_evals[1], B2HH_evals[2], B2HH_evals[3]))
 
     logger.info(
-        "%s --BOT layer: H2B MODEL  p: %.4f, r: %.4f, f: %.4f  B2H MODEL  p: %.4f, r: %.4f, f: %.4f ." %
+        "%s --BOT layer: H2B MODEL  p: %.4f, r: %.4f, f: %.4f ||||| B2H MODEL  p: %.4f, r: %.4f, f: %.4f ." %
         (name.upper(),H2BB_evals[0], H2BB_evals[1], H2BB_evals[2], B2HB_evals[0], B2HB_evals[1], B2HB_evals[2]))
 
     logger.info(
-        "%s --ALL layer: H2B MODEL  p: %.4f, r: %.4f, f: %.4f  B2H MODEL  p: %.4f, r: %.4f, f: %.4f .best_f: %.4f" %
+        "%s --ALL layer: H2B MODEL  p: %.4f, r: %.4f, f: %.4f ||||| B2H MODEL  p: %.4f, r: %.4f, f: %.4f .best_f: %.4f" %
         (name.upper(),H2B_evals[0], H2B_evals[1], H2B_evals[2], B2H_evals[0], B2H_evals[1], B2H_evals[2], best_dev))
 
     print(
-        "%s --ALL layer: H2B MODEL  p: %.4f, r: %.4f, f: %.4f  B2H MODEL  p: %.4f, r: %.4f, f: %.4f .best_f: %.4f" %
+        "%s --ALL layer: H2B MODEL  p: %.4f, r: %.4f, f: %.4f ||||| B2H MODEL  p: %.4f, r: %.4f, f: %.4f .best_f: %.4f" %
         (name.upper(),H2B_evals[0], H2B_evals[1], H2B_evals[2], B2H_evals[0], B2H_evals[1], B2H_evals[2], best_dev))
 
     return H2B_evals,B2H_evals, H2B_results,B2H_results
@@ -143,10 +143,14 @@ def train(args,data,model):
         instance_count = 0
         sample_loss = 0
         total_loss = 0
-        sample_H2B_right_token = 0
         sample_H2B_whole_token = 0
-        sample_B2H_right_token = 0
+        sample_H2B_high_right_token = 0
+        sample_H2B_bot_right_token = 0
+        sample_H2B_all_right_token = 0
         sample_B2H_whole_token = 0
+        sample_B2H_high_right_token = 0
+        sample_B2H_bot_right_token = 0
+        sample_B2H_all_right_token = 0
         random.shuffle(data.train_Ids)
 
         model.train()
@@ -170,13 +174,17 @@ def train(args,data,model):
             H2BH_loss,H2BB_loss,B2HB_loss,B2HH_loss,H2BH_tag_seqs,H2BB_tag_seqs,B2HB_tag_seqs,B2HH_tag_seqs = model.calculate_loss(batch_word, batch_wordlen, batch_char, batch_charlen, batch_charrecover, batch_hlabel,batch_llabel, mask)
 
             #high layer & low layer correct as a right token
-            H2B_right, H2B_whole = predict_check(H2BH_tag_seqs,H2BB_tag_seqs,batch_hlabel, batch_llabel, mask)
-            sample_H2B_right_token += H2B_right
+            H2B_whole,H2B_high_right,H2B_bot_right,H2B_all_right = predict_check(H2BH_tag_seqs,H2BB_tag_seqs,batch_hlabel, batch_llabel, mask)
             sample_H2B_whole_token += H2B_whole
+            sample_H2B_high_right_token += H2B_high_right
+            sample_H2B_bot_right_token += H2B_bot_right
+            sample_H2B_all_right_token += H2B_all_right
 
-            B2H_right, B2H_whole = predict_check(B2HH_tag_seqs, B2HB_tag_seqs, batch_hlabel, batch_llabel, mask)
-            sample_B2H_right_token += B2H_right
+            B2H_whole,B2H_high_right, B2H_bot_right, B2H_all_right = predict_check(B2HH_tag_seqs, B2HB_tag_seqs, batch_hlabel, batch_llabel, mask)
             sample_B2H_whole_token += B2H_whole
+            sample_B2H_high_right_token += B2H_high_right
+            sample_B2H_bot_right_token += B2H_bot_right
+            sample_B2H_all_right_token += B2H_all_right
 
             loss = args.H2BH*H2BH_loss + args.H2BB*H2BB_loss + args.B2HB*B2HB_loss + args.B2HH*B2HH_loss
             sample_loss += loss.item()
@@ -185,21 +193,27 @@ def train(args,data,model):
                 temp_time = time.time()
                 temp_cost = temp_time - temp_start
                 temp_start = temp_time
-                print("     Instance: %s; Time: %.2fs; loss: %.4f; H2B acc: %s/%s=%.4f;B2H acc: %s/%s=%.4f"
-                      % (end, temp_cost, sample_loss, sample_H2B_right_token, sample_H2B_whole_token,
-                         (sample_H2B_right_token + 0.)
-                         / sample_H2B_whole_token, sample_B2H_right_token, sample_B2H_whole_token,
-                         (sample_B2H_right_token + 0.) / sample_B2H_whole_token))
+                print("     Instance: %s; Time: %.2fs; loss: %.4f;Token Num:%s ||| H2B Hacc:%.4f;Bacc: %.4f;"
+                      "ALLacc:%.4f|||||B2H Hacc:%.4f;Bacc:%.4f;ALLacc:%.4f"
+                      % (end, temp_cost, sample_loss, sample_H2B_whole_token,
+                         (sample_H2B_high_right_token + 0.)/ sample_H2B_whole_token,(sample_H2B_bot_right_token + 0.)/ sample_H2B_whole_token,
+                         (sample_H2B_all_right_token + 0.)/ sample_H2B_whole_token,(sample_B2H_high_right_token + 0.)/ sample_H2B_whole_token,
+                         (sample_B2H_bot_right_token + 0.)/ sample_H2B_whole_token,(sample_B2H_all_right_token + 0.) / sample_B2H_whole_token))
 
                 if sample_loss > 1e8 or str(sample_loss) == "nan":
                     print("ERROR: LOSS EXPLOSION (>1e8) ! PLEASE SET PROPER PARAMETERS AND STRUCTURE! EXIT....")
                     exit(1)
                 sys.stdout.flush()
                 sample_loss = 0
-                sample_H2B_right_token = 0
+
                 sample_H2B_whole_token = 0
-                sample_B2H_right_token = 0
+                sample_H2B_high_right_token = 0
+                sample_H2B_bot_right_token = 0
+                sample_H2B_all_right_token = 0
                 sample_B2H_whole_token = 0
+                sample_B2H_high_right_token = 0
+                sample_B2H_bot_right_token = 0
+                sample_B2H_all_right_token = 0
             loss.backward()
             if args.clip:
                 torch.nn.utils.clip_grad_norm_(model.parameters(),args.clip)
@@ -207,11 +221,16 @@ def train(args,data,model):
             model.zero_grad()
         temp_time = time.time()
         temp_cost = temp_time - temp_start
-        print("     Instance: %s; Time: %.2fs; loss: %.4f; H2B acc: %s/%s=%.4f;B2H acc: %s/%s=%.4f"
-              % (end, temp_cost, sample_loss, sample_H2B_right_token, sample_H2B_whole_token,
-                 (sample_H2B_right_token + 0.)
-                 / sample_H2B_whole_token, sample_B2H_right_token, sample_B2H_whole_token,
-                 (sample_B2H_right_token + 0.) / sample_B2H_whole_token))
+        print("     Instance: %s; Time: %.2fs; loss: %.4f;Token Num:%s ||| H2B Hacc:%.4f;Bacc: %.4f;"
+              "ALLacc:%.4f|||||B2H Hacc:%.4f;Bacc:%.4f;ALLacc:%.4f"
+              % (end, temp_cost, sample_loss, sample_H2B_whole_token,
+                 (sample_H2B_high_right_token + 0.) / sample_H2B_whole_token,
+                 (sample_H2B_bot_right_token + 0.) / sample_H2B_whole_token,
+                 (sample_H2B_all_right_token + 0.) / sample_H2B_whole_token,
+                 (sample_B2H_high_right_token + 0.) / sample_H2B_whole_token,
+                 (sample_B2H_bot_right_token + 0.) / sample_H2B_whole_token,
+                 (sample_B2H_all_right_token + 0.) / sample_B2H_whole_token))
+
         epoch_finish = time.time()
         epoch_cost = epoch_finish - epoch_start
         logger.info("Epoch: %s training finished. Time: %.2fs, speed: %.2fst/s,  total loss: %s"%(idx, epoch_cost, train_num/epoch_cost, total_loss))

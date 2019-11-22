@@ -168,10 +168,12 @@ def predict_check(hpred_variable,lpred_variable, hgold_variable,lgold_variable, 
     loverlaped = (lpred == lgold)
     #correct token when both level is True
     alloverlaped = (hoverlaped == True) & (loverlaped == True)
-    right_token = np.sum(alloverlaped * mask)
+    high_right_token = np.sum(hoverlaped * mask)
+    bot_right_token = np.sum(loverlaped * mask)
+    all_right_token = np.sum(alloverlaped * mask)
     total_token = mask.sum()
     # print("right: %s, total: %s"%(right_token, total_token))
-    return right_token, total_token
+    return total_token,high_right_token,bot_right_token,all_right_token
 
 def recover_label(hpred_variable,lpred_variable, hgold_variable,lgold_variable, mask_variable, hlabel_alphabet,llabel_alphabet, word_recover):
     """

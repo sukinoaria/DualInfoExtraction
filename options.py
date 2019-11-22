@@ -30,7 +30,7 @@ def parse_argument():
     parser.add_argument('--use_crf', type=bool, default=True)
 
     ## Training
-    parser.add_argument('--batch_size', type=int, default=10)
+    parser.add_argument('--batch_size', type=int, default=20)
     parser.add_argument('--iteration', type=int, default=50)
     parser.add_argument('--average_batch_loss', type=bool, default=False)
     parser.add_argument('--optimizer', type=str, default='SGD')
