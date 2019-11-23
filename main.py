@@ -54,7 +54,7 @@ def evaluate(data, model,logger, name,best_dev = -1):
     batch_size = model.batch_size
     train_num = len(instances)
     total_batch = train_num//batch_size+1
-    for batch_id in range(35,total_batch):
+    for batch_id in range(total_batch):
         start = batch_id*batch_size
         end = (batch_id+1)*batch_size
         if end > train_num:
