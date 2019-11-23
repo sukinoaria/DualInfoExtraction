@@ -2,6 +2,7 @@
 _pycache_/
 dataset/
 output/
+log/
 .idea
 _pycache_
 _pycache_/*

@@ -5,7 +5,7 @@ def parse_argument():
 
     ###Model Settings###
     parser.add_argument('--model', choices=['DUAL','H2B', 'B2H'], help='model architecture select', default='DUAL')
-    parser.add_argument('--status', choices=['train', 'decode'], help='update algorithm', default='test')
+    parser.add_argument('--status', choices=['train', 'decode'], help='update algorithm', default='train')
     parser.add_argument('--load_data', choices=[False, True], help='update algorithm', default=True)
 
     ###PATH Settings###

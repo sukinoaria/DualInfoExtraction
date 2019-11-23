@@ -315,6 +315,8 @@ if __name__ == '__main__':
     args.gpu = torch.cuda.is_available()
     args.load_model_name += "_"+args.model
 
+    if not os.path.exists('log'):
+        os.mkdir('log')
     logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                         datefmt='%m/%d/%Y %H:%M:%S',
                         level=logging.INFO,
@@ -342,6 +344,7 @@ if __name__ == '__main__':
         if not os.path.exists(args.output_dir):
             os.mkdir(args.output_dir)
         data.save(args.load_data_name)
+
 
     #initial modules...
     if args.model == "DUAL":
