@@ -52,7 +52,7 @@ class H2B(nn.Module):
         self.wordrep = WordRep(args, data)
 
         # information interaction unit
-        self.inter_unit = H2BInterUnit(args.word_emb_dim + args.char_hidden_dim, data.hlabelset_size + 2,
+        self.inter_unit = H2BInterUnit(args.word_emb_dim + args.char_hidden_dim, data.hlabelset_size,
                                      1, F.relu)
 
         # component of Dual model

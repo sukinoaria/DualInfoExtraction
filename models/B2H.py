@@ -56,7 +56,7 @@ class B2H(nn.Module):
 
         # information interaction unit
         self.inter_unit = B2HInterUnit(args.word_emb_dim + args.char_hidden_dim,
-                                    data.llabelset_size + 2, 1, F.relu)
+                                    data.llabelset_size, 1, F.relu)
 
         # component of Dual model
         self.H_ner = BiLSTMCRF(args,input_size=args.char_hidden_dim+args.word_emb_dim,
